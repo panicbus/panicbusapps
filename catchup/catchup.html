@@ -16,6 +16,7 @@
     --border: rgba(21,18,13,0.10);
     --accent: #C1272D;
     --accent-soft: rgba(193,39,45,0.10);
+    --accent-orange: #CE7B2A;
     --bg-soft: #EFE6D2;
     --img-border: #C9C4B5;
   }
@@ -80,7 +81,8 @@
     line-height: 1.6;
     color: var(--text-muted);
   }
-  .hero-ctas { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .hero-ctas { display: flex; justify-content: center; }
+  .cta-row { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
   .btn-primary {
     display: inline-flex;
     align-items: center;
@@ -92,14 +94,13 @@
     padding: 15px 30px;
     border-radius: 10px;
   }
+  .btn-primary.btn-orange { background: var(--accent-orange); }
   .btn-primary .arrow {
     display: inline-block;
     margin-left: 6px;
     transition: transform 0.2s ease;
   }
   .btn-primary:hover .arrow { transform: translateX(4px); }
-  .url-link { font-size: 13px; color: var(--text-muted); text-decoration: none; }
-  .url-link:hover { color: var(--accent); }
 
   /* Section bands */
   .band-soft { background: var(--bg-soft); }
@@ -329,8 +330,10 @@
     <h1>Your news.<br>Your pace.<br><em>All caught up.</em></h1>
     <p>Turn any topic into a channel, stack up the stories that matter, and clear them out at your own speed, right in your browser.</p>
     <div class="hero-ctas">
-      <a class="btn-primary" href="https://usecatchup.app">Open Catch Up <span class="arrow">&rarr;</span></a>
-      <a class="url-link" href="https://usecatchup.app">usecatchup.app</a>
+      <div class="cta-row">
+        <a class="btn-primary" href="https://usecatchup.app">Visit Catch Up on the Web<span class="arrow">&rarr;</span></a>
+        <a class="btn-primary btn-orange" href="https://panicbus-apps.lemonsqueezy.com/checkout/buy/30043f81-f6dd-4213-a80a-7dad3845e8ac">Download the Desktop App <span class="arrow">&rarr;</span></a>
+      </div>
     </div>
   </section>
 </div>
@@ -453,7 +456,10 @@
   <div class="final-cta">
     <h2>Get caught up</h2>
     <p>Free, no install, no account required to try it.</p>
-    <a class="btn-primary" href="https://usecatchup.app">Open Catch Up <span class="arrow">&rarr;</span></a>
+    <div class="cta-row">
+      <a class="btn-primary" href="https://usecatchup.app">Visit Catch Up on the Web<span class="arrow">&rarr;</span></a>
+      <a class="btn-primary btn-orange" href="https://panicbus-apps.lemonsqueezy.com/checkout/buy/30043f81-f6dd-4213-a80a-7dad3845e8ac">Download the Desktop App <span class="arrow">&rarr;</span></a>
+    </div>
   </div>
 
   <footer>
