@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy — Catch Up</title>
+<link rel="icon" href="../favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5EFE0; --bg-card: #FFFBF3; --text: #15120D;
+    --text-muted: #6B5F4E; --border: rgba(21,18,13,0.10); --accent: #CC3529;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; }
+  .container { max-width: 760px; margin: 0 auto; padding: 0 32px; }
+  a { color: var(--accent); }
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 28px 0; border-bottom: 1px solid var(--border); }
+  .back-link { font-size: 14px; color: var(--text); text-decoration: none; opacity: 0.75; }
+  .back-link:hover { opacity: 1; }
+  .nav-brand { display: flex; align-items: center; gap: 8px; }
+  .nav-brand svg { width: 20px; height: 26px; }
+  .nav-brand span { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 19px; }
+  h1 { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 700; margin: 56px 0 8px; }
+  .updated { color: var(--text-muted); font-size: 13px; margin-bottom: 48px; }
+  h2 { font-family: 'Playfair Display', serif; font-size: 21px; font-weight: 600; margin: 40px 0 12px; }
+  p, li { font-size: 15px; line-height: 1.7; color: var(--text-muted); }
+  ul { padding-left: 20px; }
+  li { margin-bottom: 6px; }
+  strong { color: var(--text); }
+  footer { border-top: 1px solid var(--border); padding: 32px 0 56px; text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 64px; }
+  footer .links a { color: var(--text-muted); text-decoration: none; margin: 0 10px; }
+  footer .links a:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="container">
+  <nav>
+    <a class="back-link" href="catchup-index.html">&larr; Catch Up</a>
+    <div class="nav-brand">
+      <svg viewBox="0 0 24 32" fill="none">
+        <path d="M9 2H15V5.5C15 6.2 15.4 6.7 15.9 7.3C16.7 8.3 18 10 18 13V27C18 28.7 16.7 30 15 30H9C7.3 30 6 28.7 6 27V13C6 10 7.3 8.3 8.1 7.3C8.6 6.7 9 6.2 9 5.5V2Z" fill="#CC3529"/>
+        <rect x="6" y="16" width="12" height="1.6" fill="#F5EFE0"/>
+      </svg>
+      <span>Catch Up</span>
+    </div>
+  </nav>
+
+  <h1>Privacy Policy</h1>
+  <p class="updated">Last updated August 2026</p>
+
+  <p>Catch Up is built by Panicbus Apps, a small independent studio. This page explains what Catch Up collects, why, and how it's handled.</p>
+
+  <h2>What Catch Up collects</h2>
+  <ul>
+    <li><strong>Account info.</strong> Signing in uses Google OAuth. Catch Up receives your name, email, and profile picture, nothing else from your Google account.</li>
+    <li><strong>Your channels and activity.</strong> The topics and subchannels you follow, your reading history, bookmarks, and streak.</li>
+    <li><strong>Session data.</strong> A server-side session tied to your account so you stay signed in.</li>
+  </ul>
+
+  <h2>AI relevance filtering</h2>
+  <p>This feature is optional and off by default. If you turn it on and choose Gemini or Groq, story titles and short snippets are sent to that provider using an API key you supply yourself. That key is stored locally on your device, not on Catch Up's servers, and is used only to run this filtering on your behalf.</p>
+
+  <h2>News providers</h2>
+  <p>Stories are pulled from NewsData.io, The Guardian, GNews, Hacker News, The New York Times, and Google News (RSS). Reading a story in full may take you to the original publisher's site, which has its own privacy practices.</p>
+
+  <h2>What Catch Up doesn't do</h2>
+  <ul>
+    <li>No ad networks, no ad tracking, no selling or sharing your data with advertisers.</li>
+    <li>No third-party analytics beyond basic, aggregated server logs used to keep the service running.</li>
+  </ul>
+
+  <h2>Data retention</h2>
+  <p>Read stories move to an archive and clear out after two weeks. You can delete your account and associated data at any time by emailing support.</p>
+
+  <h2>Children's privacy</h2>
+  <p>Catch Up isn't directed at children under 13 and doesn't knowingly collect their data.</p>
+
+  <h2>Changes</h2>
+  <p>If this policy changes in a meaningful way, the date at the top of this page will be updated.</p>
+
+  <h2>Contact</h2>
+  <p>Questions about your data: <a href="mailto:nicocrisafulli@gmail.com">nicocrisafulli@gmail.com</a></p>
+
+  <footer>
+    <div class="links">
+      <a href="catchup-index.html">Catch Up</a>
+      <a href="terms.html">Terms</a>
+      <a href="../index.html">Panicbus Apps</a>
+    </div>
+    <div>&copy; 2026 Nico Crisafulli</div>
+  </footer>
+</div>
+</body>
+</html>

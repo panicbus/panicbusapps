@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panicbus Apps</title>
+<meta name="description" content="Small, considered apps made by one person.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://panicbusapps.com/">
+<meta property="og:title" content="Panicbus Apps">
+<meta property="og:description" content="Small, considered apps made by one person.">
+<meta property="og:image" content="https://panicbusapps.com/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Panicbus Apps">
+<meta name="twitter:description" content="Small, considered apps made by one person.">
+<meta name="twitter:image" content="https://panicbusapps.com/assets/og-image.png">
+<link rel="icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&family=DM+Sans:wght@400;500;700&family=Quicksand:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0C0C0E;
+    --bg-card: #161618;
+    --text: #F0F0F0;
+    --text-muted: #9A9A9A;
+    --border: rgba(255,255,255,0.10);
+    --amber: #FFB12B;
+    --fridge-accent: #DE6A2E;
+    --spend-accent: #2D9F75;
+    --catchup-accent: #C1272D;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 40px 0 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .tagline {
+    font-family: 'Quicksand', sans-serif;
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.3;
+    text-align: right;
+    color: var(--text-muted);
+  }
+  .products {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 48px;
+    padding: 40px 0 96px;
+  }
+  .product-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+  }
+  .product-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .product-icon {
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .product-icon img { display: block; }
+  .product-icon.chip {
+    background: #F5EFE0;
+    border-radius: 7px;
+    padding: 3px;
+  }
+  .product-icon.chip svg { width: 100%; height: 100%; color: #15120D; }
+  .product-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 600;
+    font-style: italic;
+  }
+  .product-name.font-fraunces { font-family: 'Fraunces', Georgia, serif; font-style: normal; }
+  .product-name.font-sans { font-family: 'DM Sans', sans-serif; font-style: normal; font-weight: 500; }
+  .product-sub {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 22px;
+  }
+  .product-image {
+    width: 100%;
+    border-radius: 14px;
+    display: block;
+    margin-bottom: 22px;
+  }
+  .pill-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .price-pill {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    width: fit-content;
+  }
+  .type-pill {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    width: fit-content;
+    background: rgba(255,255,255,0.07);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+  .price-free { background: rgba(222,106,46,0.14); color: #F2935C; }
+  .price-paid { background: rgba(45,159,117,0.14); color: #4FC996; }
+  .price-catchup { background: rgba(193,39,45,0.14); color: #D5453A; }
+  .cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+    padding: 14px 0;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  .cta .arrow { display: inline-block; margin-left: 6px; }
+  @keyframes arrow-bounce {
+    0%, 100% { transform: translateX(0); animation-timing-function: ease-out; }
+    50% { transform: translateX(8px); animation-timing-function: ease-in; }
+  }
+  .cta:hover .arrow, .product-card:hover .arrow { animation: arrow-bounce 0.7s infinite; }
+  .cta-fridge { background: var(--fridge-accent); color: #fff; }
+  .cta-spend { background: var(--spend-accent); color: #fff; }
+  .cta-catchup { background: var(--catchup-accent); color: #fff; }
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 0 56px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  footer a { color: var(--text-muted); }
+  footer .copyright { margin-top: 6px; font-size: 12px; opacity: 0.7; }
+
+  @media (max-width: 980px) {
+    .products { grid-template-columns: 1fr 1fr; gap: 40px; }
+  }
+  @media (max-width: 680px) {
+    nav { flex-direction: column; align-items: stretch; gap: 16px; padding: 32px 0 40px; }
+    .products { grid-template-columns: 1fr; gap: 48px; padding: 56px 0 72px; }
+    .brand img { height: auto; width: auto; max-width: 100%; }
+    .tagline { text-align: center; }
+    .tagline-period { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <nav>
+    <div class="brand">
+      <img src="assets/panicbus-logo.svg" alt="Panicbus Apps" height="108">
+    </div>
+    <div class="tagline">Custom applications<br>made with care<span class="tagline-period">.</span></div>
+  </nav>
+
+  <div class="products">
+
+    <a class="product-card" href="catchup/catchup.html">
+      <div class="product-title-row">
+        <div class="product-icon">
+          <img src="catchup/catchup-icon.svg" alt="" width="44" height="52">
+        </div>
+        <div class="product-name font-fraunces">Catch Up</div>
+      </div>
+      <div class="product-sub">Your news. Your pace. All caught up.</div>
+      <img class="product-image" src="assets/catchup-card.png" alt="Catch Up app screenshot">
+      <div class="pill-row">
+        <span class="price-pill price-catchup">Free</span>
+        <span class="type-pill">Web app</span>
+      </div>
+      <div class="cta cta-catchup">View Catch Up <span class="arrow">&rarr;</span></div>
+    </a>
+
+    <a class="product-card" href="fridge/fridge.html">
+      <div class="product-title-row">
+        <div class="product-icon chip">
+          <svg viewBox="0 0 48 58" fill="none">
+            <rect x="3" y="3" width="42" height="52" rx="6" stroke="currentColor" stroke-width="2.4"/>
+            <line x1="3" y1="22" x2="45" y2="22" stroke="currentColor" stroke-width="2.4"/>
+            <line x1="38.5" y1="11" x2="38.5" y2="16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+            <line x1="38.5" y1="32" x2="38.5" y2="40" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+            <circle cx="14" cy="36" r="3.5" fill="#c1432a"/>
+          </svg>
+        </div>
+        <div class="product-name">fridge</div>
+      </div>
+      <div class="product-sub">1000s of recipes that use what's in your pantry.</div>
+      <img class="product-image" src="assets/fridge-card.png" alt="Fridge app screenshot">
+      <div class="pill-row">
+        <span class="price-pill price-free">Free</span>
+        <span class="type-pill">MacOS app</span>
+      </div>
+      <div class="cta cta-fridge">View Fridge <span class="arrow">&rarr;</span></div>
+    </a>
+
+    <a class="product-card" href="spend/spend.html">
+      <div class="product-title-row">
+        <div class="product-icon">
+          <img src="assets/spend-icon.png" alt="" width="26" height="26">
+        </div>
+        <div class="product-name font-sans">Spend</div>
+      </div>
+      <div class="product-sub">A personal desktop budget tracker.</div>
+      <img class="product-image" src="assets/spend-card.png" alt="Spend app screenshot">
+      <div class="pill-row">
+        <span class="price-pill price-paid">$19 one-time</span>
+        <span class="type-pill">MacOS app</span>
+      </div>
+      <div class="cta cta-spend">View Spend <span class="arrow">&rarr;</span></div>
+    </a>
+
+  </div>
+
+  <footer>
+    <div><a href="mailto:nicocrisafulli@gmail.com">Email me for support</a></div>
+    <div class="copyright">&copy; 2026 <a href="https://www.linkedin.com/in/nicocrisafulli" style="color: inherit; text-decoration: underline;" target="_blank" rel="noopener">Nico Crisafulli</a> &middot; Built in Alameda, CA</div>
+  </footer>
+</div>
+
+</body>
+</html>

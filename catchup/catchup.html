@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catch Up — Panicbus Apps</title>
+<link rel="icon" href="catchup-icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5EFE0;
+    --bg-card: #FFFBF3;
+    --text: #15120D;
+    --text-muted: #6B5F4E;
+    --border: rgba(21,18,13,0.10);
+    --accent: #C1272D;
+    --accent-soft: rgba(193,39,45,0.10);
+    --bg-soft: #EFE6D2;
+    --img-border: #C9C4B5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .container { max-width: 1060px; margin: 0 auto; padding: 0 32px; }
+  a { color: var(--accent); }
+
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-panicbus { display: flex; align-items: center; }
+  .nav-panicbus svg { height: 60px; width: auto; display: block; transition: filter 0.2s ease; }
+  .nav-panicbus:hover svg { filter: brightness(1.15) saturate(1.3); }
+  .nav-brand { display: flex; align-items: center; gap: 8px; }
+  .nav-brand img { width: 30px; height: 52px; }
+  .nav-brand span {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 700;
+    font-size: 38px;
+  }
+
+  /* Hero */
+  .hero {
+    text-align: center;
+    padding: 56px 0 40px;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 6px 16px;
+    border-radius: 999px;
+    margin-bottom: 28px;
+  }
+  .hero h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 700;
+    font-size: 56px;
+    line-height: 1.12;
+    margin: 0 0 24px;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+  .hero p {
+    max-width: 560px;
+    margin: 0 auto 36px;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+  .hero-ctas { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 15px 30px;
+    border-radius: 10px;
+  }
+  .btn-primary .arrow {
+    display: inline-block;
+    margin-left: 6px;
+    transition: transform 0.2s ease;
+  }
+  .btn-primary:hover .arrow { transform: translateX(4px); }
+  .url-link { font-size: 13px; color: var(--text-muted); text-decoration: none; }
+  .url-link:hover { color: var(--accent); }
+
+  /* Section bands */
+  .band-soft { background: var(--bg-soft); }
+
+  /* Primary screenshot */
+  .hero-shot { padding: 48px 0 72px; }
+  .hero-shot img {
+    width: 100%;
+    border-radius: 16px;
+    display: block;
+    border: 1px solid var(--img-border);
+    box-shadow: 0 12px 28px -14px rgba(21,18,13,0.22);
+  }
+
+  /* Feature grid */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    padding: 0 0 96px;
+  }
+  .feature-item { text-align: center; }
+  .feature-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--accent-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+  }
+  .feature-icon svg { width: 20px; height: 20px; }
+  .feature-item h3 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0 0 8px;
+  }
+  .feature-item p {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  /* Split sections */
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+    padding: 72px 0;
+  }
+  .split.reverse .split-text { order: 2; }
+  .split.reverse .split-img { order: 1; }
+  .split-eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .split-text h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 1.25;
+    margin: 0 0 16px;
+  }
+  .split-text p {
+    font-size: 15.5px;
+    line-height: 1.65;
+    color: var(--text-muted);
+    margin: 0 0 12px;
+  }
+  .split-text .fine-print {
+    font-size: 13px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    margin-top: 20px;
+  }
+  .split-img img {
+    width: 100%;
+    border-radius: 14px;
+    display: block;
+    border: 1px solid var(--img-border);
+    box-shadow: 0 10px 24px -12px rgba(21,18,13,0.2);
+  }
+  .split-img.small img { max-width: 420px; margin: 0 auto; display: block; }
+
+  /* News providers */
+  .providers {
+    padding: 64px 0;
+    text-align: center;
+  }
+  .providers p.label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+  .provider-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px 28px;
+  }
+  .provider-list span {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 16px;
+    color: var(--text);
+  }
+
+  /* Mobile strip */
+  .mobile-section {
+    padding: 88px 0;
+    text-align: center;
+  }
+  .mobile-section .split-eyebrow { text-align: center; }
+  .mobile-section h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 30px;
+    font-weight: 600;
+    margin: 0 0 12px;
+  }
+  .mobile-section > p {
+    max-width: 480px;
+    margin: 0 auto 48px;
+    color: var(--text-muted);
+    font-size: 15.5px;
+    line-height: 1.6;
+  }
+  .phone-row {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+  .phone-frame {
+    width: 210px;
+    border-radius: 22px;
+    border: 6px solid var(--text);
+    overflow: hidden;
+    box-shadow: 0 20px 40px -16px rgba(21,18,13,0.25);
+  }
+  .phone-frame img { width: 100%; display: block; }
+
+  /* Final CTA */
+  .final-cta {
+    padding: 64px 0 72px;
+    text-align: center;
+  }
+  .final-cta h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 32px;
+    font-weight: 600;
+    margin: 0 0 16px;
+  }
+  .final-cta p {
+    color: var(--text-muted);
+    font-size: 15.5px;
+    margin: 0 0 32px;
+  }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 0 56px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  footer .links { margin-bottom: 8px; }
+  footer .links a { color: var(--text-muted); text-decoration: none; margin: 0 10px; }
+  footer .links a:hover { color: var(--accent); }
+  footer .copyright { font-size: 12px; opacity: 0.7; }
+
+  @media (max-width: 860px) {
+    .hero h1 { font-size: 40px; }
+    .feature-grid { grid-template-columns: 1fr 1fr; }
+    .split, .split.reverse { grid-template-columns: 1fr; gap: 32px; }
+    .split .split-text, .split.reverse .split-text,
+    .split .split-img, .split.reverse .split-img { order: initial; }
+  }
+  @media (max-width: 560px) {
+    .feature-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 34px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <nav>
+    <a href="../index.html" class="nav-panicbus" aria-label="Panicbus Apps">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 489 132">
+        <g transform="translate(14,14.0) scale(0.4333)"><rect width="240" height="240" rx="54" fill="#17141C"/><g transform="translate(36.0,71.2) scale(0.8400)">
+        <g>
+          <rect x="0"  y="30" width="42" height="9"  rx="4.5" fill="#FF5A47"/>
+          <rect x="10" y="51" width="44" height="11" rx="5.5" fill="#FF5A47"/>
+          <rect x="2"  y="73" width="34" height="9"  rx="4.5" fill="#FF5A47"/>
+          <rect x="56" y="16" width="140" height="80" rx="18" fill="#FFB12B"/>
+          <rect x="64" y="20" width="124" height="8" rx="4" fill="#FFC65C"/>
+          <rect x="68"  y="34" width="26" height="24" rx="6" fill="#17141C"/>
+          <rect x="100" y="34" width="26" height="24" rx="6" fill="#17141C"/>
+          <path d="M132 34 h32 a8 8 0 0 1 8 8 v8 a8 8 0 0 1 -8 8 h-32 z" fill="#17141C"/>
+          <circle cx="188" cy="78" r="6" fill="#FFF3D6"/>
+          <circle cx="92"  cy="96" r="16" fill="#17141C"/>
+          <circle cx="168" cy="96" r="16" fill="#17141C"/>
+          <circle cx="92"  cy="96" r="6"  fill="#FFB12B"/>
+          <circle cx="168" cy="96" r="6"  fill="#FFB12B"/>
+        </g></g></g>
+        <g transform="translate(148.00,82.00) scale(0.06600,-0.06600)" fill="#17141C"><path d="M66.0 -200V552H210.0V314H194.0Q197.0 395 226.5 452.0Q256.0 509 307.0 538.5Q358.0 568 424.0 568Q481.0 568 527.0 547.5Q573.0 527 606.0 489.5Q639.0 452 656.5 401.0Q674.0 350 674.0 289V265Q674.0 204 658.0 152.5Q642.0 101 610.0 62.5Q578.0 24 531.5 3.0Q485.0 -18 425.0 -18Q361.0 -18 312.0 7.5Q263.0 33 234.5 84.5Q206.0 136 204.0 214L248.0 160V-200ZM370.0 132Q406.0 132 433.5 150.5Q461.0 169 476.5 202.0Q492.0 235 492.0 277Q492.0 320 476.5 351.5Q461.0 383 434.0 400.5Q407.0 418 370.0 418Q337.0 418 308.5 403.0Q280.0 388 262.0 359.0Q244.0 330 244.0 289V255Q244.0 216 263.0 188.5Q282.0 161 311.0 146.5Q340.0 132 370.0 132ZM1096.0 0V162H1066.0V335Q1066.0 373 1048.5 391.5Q1031.0 410 991.0 410Q972.0 410 935.0 409.0Q898.0 408 857.0 406.0Q816.0 404 782.0 402V554Q806.0 556 839.0 558.0Q872.0 560 907.5 561.0Q943.0 562 973.0 562Q1058.0 562 1117.5 537.0Q1177.0 512 1208.5 462.0Q1240.0 412 1240.0 335V0ZM921.0 -14Q863.0 -14 818.0 7.0Q773.0 28 747.5 67.5Q722.0 107 722.0 162Q722.0 224 755.0 262.5Q788.0 301 846.0 319.0Q904.0 337 979.0 337H1086.0V243H979.0Q942.0 243 922.0 224.5Q902.0 206 902.0 175Q902.0 145 922.0 126.5Q942.0 108 979.0 108Q1003.0 108 1021.5 116.5Q1040.0 125 1052.0 146.0Q1064.0 167 1066.0 204L1108.0 164Q1103.0 107 1080.5 67.5Q1058.0 28 1018.5 7.0Q979.0 -14 921.0 -14ZM1350.0 0V552H1494.0V315H1486.0Q1486.0 401 1508.0 457.5Q1530.0 514 1573.5 542.0Q1617.0 570 1679.0 570H1687.0Q1781.0 570 1832.5 507.5Q1884.0 445 1884.0 316V0H1702.0V321Q1702.0 359 1679.5 383.5Q1657.0 408 1618.0 408Q1579.0 408 1555.5 383.5Q1532.0 359 1532.0 319V0ZM2020.0 0V552H2202.0V0ZM1950.0 420V552H2202.0V420ZM2094.5 596.0Q2045.0 596 2021.5 621.5Q1998.0 647 1998.0 687Q1998.0 727 2021.6190476190477 752.5Q2045.2380952380952 778.0 2094.0 778Q2144.0 778 2167.0 752.5Q2190.0 727 2190.0 687Q2190.0 647 2167.0 621.5Q2144.0 596 2094.5 596.0ZM2576.0 -20Q2504.0 -20 2451.0 3.5Q2398.0 27 2362.5 67.0Q2327.0 107 2309.5 158.0Q2292.0 209 2292.0 264V284Q2292.0 342 2310.5 394.0Q2329.0 446 2365.0 486.0Q2401.0 526 2454.0 549.0Q2507.0 572 2576.0 572Q2652.0 572 2710.0 542.0Q2768.0 512 2802.5 459.5Q2837.0 407 2841.0 339H2663.0Q2660.0 372 2638.5 395.0Q2617.0 418 2576.0 418Q2541.0 418 2518.5 400.0Q2496.0 382 2485.0 350.0Q2474.0 318 2474.0 274Q2474.0 233 2483.5 201.0Q2493.0 169 2515.5 151.5Q2538.0 134 2576.0 134Q2604.0 134 2623.0 144.0Q2642.0 154 2653.0 172.5Q2664.0 191 2667.0 216H2845.0Q2841.0 146 2805.5 93.0Q2770.0 40 2711.0 10.0Q2652.0 -20 2576.0 -20Z"/></g><g transform="translate(342.69,82.00) scale(0.06600,-0.06600)" fill="#FFB12B"><path d="M422.0 -18Q354.0 -18 303.5 10.0Q253.0 38 224.5 92.0Q196.0 146 194.0 224H210.0V0H66.0V730H248.0V354L208.0 314Q211.0 395 239.0 452.0Q267.0 509 316.5 538.5Q366.0 568 431.0 568Q487.0 568 532.0 547.5Q577.0 527 608.5 489.5Q640.0 452 657.0 401.0Q674.0 350 674.0 289V265Q674.0 204 657.0 152.5Q640.0 101 607.0 62.5Q574.0 24 527.5 3.0Q481.0 -18 422.0 -18ZM370.0 132Q406.0 132 433.5 150.5Q461.0 169 476.5 202.0Q492.0 235 492.0 277Q492.0 320 476.5 351.5Q461.0 383 434.0 400.5Q407.0 418 370.0 418Q337.0 418 308.5 403.0Q280.0 388 262.0 359.0Q244.0 330 244.0 289V255Q244.0 216 263.0 188.5Q282.0 161 311.0 146.5Q340.0 132 370.0 132ZM947.0 -18Q853.0 -18 801.5 43.5Q750.0 105 750.0 232V552H932.0V227Q932.0 190 954.0 167.0Q976.0 144 1013.0 144Q1050.0 144 1073.0 167.0Q1096.0 190 1096.0 229V552H1278.0V0H1134.0V232H1144.0Q1144.0 147 1122.5 91.5Q1101.0 36 1059.0 9.0Q1017.0 -18 955.0 -18ZM1619.0 -18Q1499.0 -18 1430.0 31.5Q1361.0 81 1356.0 171H1516.0Q1520.0 146 1547.0 128.0Q1574.0 110 1623.0 110Q1658.0 110 1683.5 120.5Q1709.0 131 1709.0 155Q1709.0 176 1689.0 189.5Q1669.0 203 1616.0 208L1578.0 212Q1472.0 223 1422.0 270.0Q1372.0 317 1372.0 388Q1372.0 449 1402.0 488.5Q1432.0 528 1485.0 548.0Q1538.0 568 1606.0 568Q1717.0 568 1785.0 519.5Q1853.0 471 1857.0 380H1697.0Q1693.0 405 1670.0 422.5Q1647.0 440 1604.0 440Q1573.0 440 1553.5 429.0Q1534.0 418 1534.0 398Q1534.0 377 1552.5 367.0Q1571.0 357 1612.0 352L1650.0 348Q1756.0 337 1813.5 289.5Q1871.0 242 1871.0 165Q1871.0 108 1840.5 67.0Q1810.0 26 1753.5 4.0Q1697.0 -18 1619.0 -18Z"/></g><g transform="translate(152.00,116.00) scale(0.02000,-0.02000)" fill="#9C95A6"><path d="M13.0 0 254.25 730.0H519.25L768.5 0.0H599.25L397.0 616.5L448.75 595.5H320.25L373.5 616.5L177.0 0ZM195.5 181.25 245.75 317.25H532.25L582.5 181.25ZM1428.0 209V350.5H1558.75Q1597.25 350.5 1624.5 365.75Q1651.75 381.0 1666.625 408.5Q1681.5 436.0 1681.5 472.25Q1681.5 509.5 1666.625 537.0Q1651.75 564.5 1624.5 579.25Q1597.25 594.0 1558.75 594.0H1428.0V735.5H1550.5Q1643.5 735.5 1710.0 704.75Q1776.5 674.0 1812.0 616.75Q1847.5 559.5 1847.5 480.25V464.25Q1847.5 386.0 1812.0 328.625Q1776.5 271.25 1710.0 240.125Q1643.5 209.0 1550.5 209.0ZM1284.0 0V735.5H1448.0V0ZM2515.0 209V350.5H2645.75Q2684.25 350.5 2711.5 365.75Q2738.75 381.0 2753.625 408.5Q2768.5 436.0 2768.5 472.25Q2768.5 509.5 2753.625 537.0Q2738.75 564.5 2711.5 579.25Q2684.25 594.0 2645.75 594.0H2515.0V735.5H2637.5Q2730.5 735.5 2797.0 704.75Q2863.5 674.0 2899.0 616.75Q2934.5 559.5 2934.5 480.25V464.25Q2934.5 386.0 2899.0 328.625Q2863.5 271.25 2797.0 240.125Q2730.5 209.0 2637.5 209.0ZM2371.0 0V735.5H2535.0V0ZM3712.25 -19.5Q3613.0 -19.5 3544.875 12.0Q3476.75 43.5 3441.625 98.375Q3406.5 153.25 3406.5 224.0H3566.0Q3566.0 196.25 3581.25 171.875Q3596.5 147.5 3628.625 133.0Q3660.75 118.5 3712.25 118.5Q3758.0 118.5 3789.125 130.875Q3820.25 143.25 3836.125 164.625Q3852.0 186 3852.0 214Q3852.0 249.25 3822.0 269.75Q3792.0 290.25 3725.25 295.75L3669.75 300.5Q3560.75 310.0 3496.0 368.75Q3431.25 427.5 3431.25 524.5Q3431.25 595.25 3464.5 646.0Q3497.75 696.75 3558.0 724.125Q3618.25 751.5 3699.75 751.5Q3786.25 751.5 3847.625 722.0Q3909.0 692.5 3941.875 639.0Q3974.75 585.5 3974.75 514.0H3815.25Q3815.25 540.75 3802.125 563.5Q3789.0 586.25 3763.375 599.875Q3737.75 613.5 3699.75 613.5Q3663.75 613.5 3639.5 601.625Q3615.25 589.75 3603.0 569.375Q3590.75 549.0 3590.75 524.5Q3590.75 493.5 3612.75 470.75Q3634.75 448.0 3685.25 443.75L3740.75 439.0Q3821.0 432.25 3881.875 404.5Q3942.75 376.75 3977.125 329.375Q4011.5 282.0 4011.5 214.0Q4011.5 144.0 3975.125 91.25Q3938.75 38.5 3871.875 9.5Q3805.0 -19.5 3712.25 -19.5Z"/></g></svg>
+    </a>
+    <div class="nav-brand">
+      <img src="catchup-icon-mark.svg" alt="" width="30" height="52">
+      <span>Catch Up</span>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="badge">Free web app &middot; no install needed</div>
+    <h1>Your news.<br>Your pace.<br><em>All caught up.</em></h1>
+    <p>Turn any topic into a channel, stack up the stories that matter, and clear them out at your own speed, right in your browser.</p>
+    <div class="hero-ctas">
+      <a class="btn-primary" href="https://usecatchup.app">Open Catch Up <span class="arrow">&rarr;</span></a>
+      <a class="url-link" href="https://usecatchup.app">usecatchup.app</a>
+    </div>
+  </section>
+</div>
+
+<div class="band-soft">
+<div class="container">
+  <div class="hero-shot">
+    <img src="images/dt-home.jpg" alt="Catch Up home screen showing channels for Politics, AI, Tech, Phish, and more, each with an unread count">
+  </div>
+
+  <div class="feature-grid">
+    <div class="feature-item">
+      <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="7" height="7" rx="1.5" stroke="#C1272D" stroke-width="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.5" stroke="#C1272D" stroke-width="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.5" stroke="#C1272D" stroke-width="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.5" stroke="#C1272D" stroke-width="1.6"/></svg></div>
+      <h3>Channels & subchannels</h3>
+      <p>Follow a topic as a channel, then narrow it with subchannels. Subchannel stories stack on top of the channel's own coverage.</p>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="4" stroke="#C1272D" stroke-width="1.6"/><circle cx="9" cy="9" r="1.3" fill="#C1272D"/><circle cx="15" cy="9" r="1.3" fill="#C1272D"/><circle cx="9" cy="15" r="1.3" fill="#C1272D"/><circle cx="15" cy="15" r="1.3" fill="#C1272D"/></svg></div>
+      <h3>Roll the dice</h3>
+      <p>Not sure where to start? Pull one random unread story from your whole pool and go from there.</p>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3C9 8 6 10 6 14a6 6 0 0012 0c0-4-3-6-6-11z" stroke="#C1272D" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+      <h3>Streaks & The Pool</h3>
+      <p>The Pool combines every channel into one feed. Your streak counts the days you've kept up with it.</p>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M6 4h12v17l-6-4-6 4V4z" stroke="#C1272D" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+      <h3>Bookmarks</h3>
+      <p>Save a story for later. Read stories stick around in an archive for two weeks before they clear out.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="container">
+  <div class="split">
+    <div class="split-text">
+      <div class="split-eyebrow">Channels</div>
+      <h2>Any topic on earth, organized your way</h2>
+      <p>Add a channel for anything: a team, a band, a subject, a place. Subchannels narrow it further, like one player or one album, without losing the bigger picture.</p>
+      <p>Unlimited channels and subchannels, whatever you're trying to keep up with.</p>
+    </div>
+    <div class="split-img">
+      <img src="images/dt-channel.jpg" alt="Catch Up AI channel with a Jobs subchannel, showing a grid of related news cards">
+    </div>
+  </div>
+</div>
+
+<div class="band-soft">
+<div class="container">
+  <div class="split reverse">
+    <div class="split-text">
+      <div class="split-eyebrow">Reading</div>
+      <h2>Preview first, click only when it's worth it</h2>
+      <p>Cards with a snippet or image expand right in the app, so you can see what a story's actually about before deciding to read further. Cards without either link straight to the source.</p>
+    </div>
+    <div class="split-img">
+      <img src="images/dt-roll.jpg" alt="A story card expanded in Catch Up with a headline, image, and Read here button">
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="container">
+  <div class="split">
+    <div class="split-text">
+      <div class="split-eyebrow">AI filtering</div>
+      <h2>An AI layer that filters, not decides</h2>
+      <p>Turn on relevance filtering and Catch Up checks each incoming story against the channel or subchannel it landed in, dropping the ones that don't actually fit. It's optional, off by default, and runs on your own API key.</p>
+      <p class="fine-print">Signing in uses Google. Catch Up only asks for your basic account info, nothing more.</p>
+    </div>
+    <div class="split-img">
+      <img src="images/ai-filter.jpg" alt="Settings screen with AI relevance filtering toggle set to Gemini">
+    </div>
+  </div>
+</div>
+
+<div class="band-soft">
+<div class="container">
+  <div class="split reverse">
+    <div class="split-text">
+      <div class="split-eyebrow">The Pool</div>
+      <h2>An inbox you can actually empty</h2>
+      <p>Work through a category and when you're through, Catch Up tells you. Nothing waiting to refill the moment you look away.</p>
+    </div>
+    <div class="split-img small">
+      <img src="images/dt-caughtup.jpg" alt="Catch Up modal reading All caught up in The Pool">
+    </div>
+  </div>
+
+  <div class="providers">
+    <p class="label">Every story comes from one source, pulled in parallel</p>
+    <div class="provider-list">
+      <span>NewsData.io</span>
+      <span>The Guardian</span>
+      <span>GNews</span>
+      <span>Hacker News</span>
+      <span>The New York Times</span>
+      <span>Google News (RSS)</span>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="mobile-section">
+  <div class="container">
+    <div class="split-eyebrow">Also on your phone</div>
+    <h2>The same pace, in your pocket</h2>
+    <p>Catch Up is a hosted web app, so it installs to your home screen like any other app, no App Store required.</p>
+    <div class="phone-row">
+      <div class="phone-frame"><img src="images/mobile-home.jpg" alt="Catch Up home screen on mobile"></div>
+      <div class="phone-frame"><img src="images/mobile-channel.jpg" alt="Catch Up channel view on mobile"></div>
+      <div class="phone-frame"><img src="images/mobile-bookmarks.jpg" alt="Catch Up bookmarks screen on mobile"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="final-cta">
+    <h2>Get caught up</h2>
+    <p>Free, no install, no account required to try it.</p>
+    <a class="btn-primary" href="https://usecatchup.app">Open Catch Up <span class="arrow">&rarr;</span></a>
+  </div>
+
+  <footer>
+    <div class="links">
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="mailto:nicocrisafulli@gmail.com">Email me for support</a>
+    </div>
+    <div class="copyright">&copy; 2026 Nico Crisafulli &middot; Built in Alameda, CA</div>
+  </footer>
+</div>
+
+</body>
+</html>
