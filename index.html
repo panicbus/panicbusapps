@@ -18,7 +18,7 @@
 <meta name="twitter:image" content="https://panicbusapps.com/assets/og-image.png">
 <link rel="icon" href="favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&family=DM+Sans:wght@400;500;700&family=Quicksand:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&family=DM+Sans:wght@400;500;700&family=Quicksand:wght@500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #0C0C0E;
@@ -30,6 +30,7 @@
     --fridge-accent: #DE6A2E;
     --spend-accent: #2D9F75;
     --catchup-accent: #C1272D;
+    --tallyup-accent: #4F5FD1;
   }
   * { box-sizing: border-box; }
   body {
@@ -76,7 +77,7 @@
   }
   .products {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 48px;
     padding: 40px 0 96px;
   }
@@ -115,6 +116,9 @@
   }
   .product-name.font-fraunces { font-family: 'Fraunces', Georgia, serif; font-style: normal; }
   .product-name.font-sans { font-family: 'DM Sans', sans-serif; font-style: normal; font-weight: 500; }
+  .product-name.font-grotesk { font-family: 'Space Grotesk', sans-serif; font-style: normal; font-weight: 700; font-size: 32px; }
+  .product-name.font-grotesk .accent { color: var(--tallyup-accent); }
+  .product-icon.chip.chip-tallyup { background: #EEF1F6; }
   .product-sub {
     font-size: 15px;
     color: var(--text-muted);
@@ -155,6 +159,7 @@
   .price-free { background: rgba(222,106,46,0.14); color: #F2935C; }
   .price-paid { background: rgba(45,159,117,0.14); color: #4FC996; }
   .price-catchup { background: rgba(193,39,45,0.14); color: #D5453A; }
+  .price-tallyup { background: rgba(79,95,209,0.16); color: #8B93EF; }
   .cta {
     display: flex;
     align-items: center;
@@ -176,6 +181,7 @@
   .cta-fridge { background: var(--fridge-accent); color: #fff; }
   .cta-spend { background: var(--spend-accent); color: #fff; }
   .cta-catchup { background: var(--catchup-accent); color: #fff; }
+  .cta-tallyup { background: var(--tallyup-accent); color: #fff; }
   footer {
     border-top: 1px solid var(--border);
     padding: 32px 0 56px;
@@ -186,9 +192,6 @@
   footer a { color: var(--text-muted); }
   footer .copyright { margin-top: 6px; font-size: 12px; opacity: 0.7; }
 
-  @media (max-width: 980px) {
-    .products { grid-template-columns: 1fr 1fr; gap: 40px; }
-  }
   @media (max-width: 680px) {
     nav { flex-direction: column; align-items: stretch; gap: 16px; padding: 32px 0 40px; }
     .products { grid-template-columns: 1fr; gap: 48px; padding: 56px 0 72px; }
@@ -229,6 +232,38 @@
       <div class="cta cta-catchup">View Catch Up <span class="arrow">&rarr;</span></div>
     </a>
 
+    <a class="product-card" href="tallyup/tallyup.html">
+      <div class="product-title-row">
+        <div class="product-icon chip chip-tallyup">
+          <img src="tallyup/tallyup-icon.svg" alt="" width="26" height="26">
+        </div>
+        <div class="product-name font-grotesk">Tally<span class="accent">Up</span></div>
+      </div>
+      <div class="product-sub">The punch card, without the paper.</div>
+      <img class="product-image" src="assets/tallyup-card.png" alt="TallyUp app screenshot">
+      <div class="pill-row">
+        <span class="price-pill price-tallyup">Free, pilot</span>
+        <span class="type-pill">Web app</span>
+      </div>
+      <div class="cta cta-tallyup">View TallyUp <span class="arrow">&rarr;</span></div>
+    </a>
+
+    <a class="product-card" href="spend/spend.html">
+      <div class="product-title-row">
+        <div class="product-icon">
+          <img src="assets/spend-icon.png" alt="" width="26" height="26">
+        </div>
+        <div class="product-name font-sans">Spend</div>
+      </div>
+      <div class="product-sub">A personal desktop budget tracker.</div>
+      <img class="product-image" src="assets/spend-card.png" alt="Spend app screenshot">
+      <div class="pill-row">
+        <span class="price-pill price-paid">$19 one-time</span>
+        <span class="type-pill">MacOS app</span>
+      </div>
+      <div class="cta cta-spend">View Spend <span class="arrow">&rarr;</span></div>
+    </a>
+
     <a class="product-card" href="fridge/fridge.html">
       <div class="product-title-row">
         <div class="product-icon chip">
@@ -249,22 +284,6 @@
         <span class="type-pill">MacOS app</span>
       </div>
       <div class="cta cta-fridge">View Fridge <span class="arrow">&rarr;</span></div>
-    </a>
-
-    <a class="product-card" href="spend/spend.html">
-      <div class="product-title-row">
-        <div class="product-icon">
-          <img src="assets/spend-icon.png" alt="" width="26" height="26">
-        </div>
-        <div class="product-name font-sans">Spend</div>
-      </div>
-      <div class="product-sub">A personal desktop budget tracker.</div>
-      <img class="product-image" src="assets/spend-card.png" alt="Spend app screenshot">
-      <div class="pill-row">
-        <span class="price-pill price-paid">$19 one-time</span>
-        <span class="type-pill">MacOS app</span>
-      </div>
-      <div class="cta cta-spend">View Spend <span class="arrow">&rarr;</span></div>
     </a>
 
   </div>
