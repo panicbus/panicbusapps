@@ -88,8 +88,14 @@
     aspect-ratio: 2240 / 360;
     margin-top: 28px;
   }
+  /* Below 1000px the hero sketch drops under the logo as its own full-width row. */
   @media (max-width: 999px) {
-    .sketch-hero { display: none; }
+    .sketch-hero {
+      order: 3;
+      flex: 0 0 100%;
+      margin: 0;
+      aspect-ratio: 960 / 360;
+    }
   }
 
   /* Header */
@@ -224,7 +230,8 @@
   @media (max-width: 680px) {
     .container { padding: 0 20px; }
     .brand img { width: 280px; }
-    .site-nav { gap: 20px; }
+    .site-header { gap: 8px; padding-bottom: 20px; }
+    .site-nav { display: none; }
     .hero { padding: 64px 0 48px; }
     .app { gap: 32px; padding: 48px 0; }
     .app-name { font-size: 36px; }
@@ -380,7 +387,6 @@
   if (reduce) return;
 
   // preload="none" means nothing downloads until a tile first scrolls into view;
-  // a hidden tile (the header one on narrow screens) never loads at all.
   var observer = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {
       var video = entry.target;
