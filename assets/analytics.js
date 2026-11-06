@@ -22,8 +22,6 @@
     defaults: '2026-08-30',
     // Visitors are anonymous; no person profiles are created for them.
     person_profiles: 'identified_only',
-    // The privacy pages promise that a Do Not Track signal means nothing is recorded.
-    respect_dnt: true,
     // A marketing site doesn't need replays, and skipping them keeps the
     // organization's free recording allowance for the apps (TallyUp etc.).
     disable_session_recording: true
