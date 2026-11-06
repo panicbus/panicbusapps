@@ -1,0 +1,24 @@
+# Send PostHog analytics through our own domain (/pbr/*) so blockers that
+# target posthog.com don't drop visits. See https://posthog.com/docs/advanced/proxy/netlify
+# The static and array rules must stay above the catch-all; Netlify matches in order.
+
+[[redirects]]
+  from = "/pbr/static/*"
+  to = "https://us-assets.i.posthog.com/static/:splat"
+  host = "us-assets.i.posthog.com"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/pbr/array/*"
+  to = "https://us-assets.i.posthog.com/array/:splat"
+  host = "us-assets.i.posthog.com"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/pbr/*"
+  to = "https://us.i.posthog.com/:splat"
+  host = "us.i.posthog.com"
+  status = 200
+  force = true

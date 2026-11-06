@@ -5,7 +5,8 @@
 // safe to commit. Find it in PostHog under Settings > Project > Project token.
 (function () {
   var POSTHOG_TOKEN = 'phc_ozvHgUZeNDiUSAYRE6GpxTtyyimqCkT9qr7jV2Uu6KZ3';
-  var POSTHOG_HOST = 'https://us.i.posthog.com';
+  // Our own path, proxied to PostHog's US servers by netlify.toml.
+  var POSTHOG_HOST = '/pbr';
 
   // Stay silent until a real token is set, and never count local previews.
   if (POSTHOG_TOKEN.indexOf('REPLACE') !== -1) return;
@@ -17,6 +18,7 @@
 
   window.posthog.init(POSTHOG_TOKEN, {
     api_host: POSTHOG_HOST,
+    ui_host: 'https://us.posthog.com',
     defaults: '2026-08-30',
     // Visitors are anonymous; no person profiles are created for them.
     person_profiles: 'identified_only',
