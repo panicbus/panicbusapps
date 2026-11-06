@@ -69,8 +69,11 @@
   <h2>What Catch Up doesn't do</h2>
   <ul>
     <li>No ad networks, no ad tracking, no selling or sharing your data with advertisers.</li>
-    <li>No third-party analytics in the app beyond basic, aggregated server logs used to keep the service running.</li>
+    <li>No third-party analytics in the desktop app beyond basic, aggregated server logs used to keep the service running. The web version counts visits anonymously, as described below.</li>
   </ul>
+
+  <h2>Visit counts on usecatchup.app</h2>
+  <p>The web version of Catch Up at usecatchup.app tells PostHog each time it's opened, so we can see how many people use it. That count includes the page address (without anything after it, such as sign-in codes), the site you came from, and your browser and device type. Nothing is stored on your device for this, and no profile of you is made. PostHog tells repeat visitors apart for one day using a scrambled code made from your IP address and browser, and doesn't keep your IP address. It never receives your account, your channels, or anything you read. The desktop app doesn't do this at all.</p>
 
   <h2>This website</h2>
   <p>The Catch Up pages on panicbusapps.com, including this one, use PostHog analytics to count visits. PostHog records the pages you view, the links you click, the referring site, your browser and device type, and your approximate location (country and city), which is worked out from your IP address. It stores a random identifier in a cookie and in local storage so repeat visits aren't counted as new visitors. This isn't connected to your Catch Up account, and it isn't sold or used for advertising. PostHog processes the data on our behalf in the United States; see the <a href="https://posthog.com/privacy" target="_blank" rel="noopener">PostHog privacy policy</a>. You can block the script with a content blocker, or clear its cookie and local storage, at any time.</p>
