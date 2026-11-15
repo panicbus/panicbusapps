@@ -20,7 +20,7 @@
 <link rel="alternate icon" href="favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600&family=Playfair+Display:ital,wght@1,600&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Lato:wght@700&family=DM+Sans:wght@400;500;700&family=Fraunces:opsz,wght@9..144,600&family=Playfair+Display:ital,wght@1,600&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #0C0C0E;
@@ -165,6 +165,12 @@
   }
   .app-shot:hover img { transform: translateY(-4px); }
 
+  .app--breakthru .app-icon { background: #1f3f63; overflow: hidden; }
+  .app--breakthru .app-icon img { width: 56px; height: 56px; }
+  .app--breakthru .app-name { font-family: 'Lato', sans-serif; font-weight: 700; letter-spacing: -0.01em; }
+  .app--breakthru .pill-price { background: rgba(233,185,73,0.16); color: #E9B949; }
+  .app--breakthru .cta { background: #2D5B8A; }
+
   .app--catchup .app-name { font-family: 'Fraunces', Georgia, serif; font-weight: 600; letter-spacing: -0.01em; }
   .app--catchup .pill-price { background: rgba(193,39,45,0.16); color: #F0625B; }
   .app--catchup .cta { background: #C1272D; }
@@ -268,6 +274,20 @@
     </section>
 
     <h2 id="apps" class="visually-hidden">Apps</h2>
+
+    <article class="app app--breakthru">
+      <div class="app-info">
+        <div class="app-title">
+          <span class="app-icon"><img src="breakthru/breakthru-icon.png" alt="" width="40" height="40"></span>
+          <h3 class="app-name">Breakthru</h3>
+        </div>
+        <p class="app-tagline">Drop your thoughts. See what breaks thru.</p>
+        <p class="app-desc">An AI journal that turns what is on your mind into what is next. Write it all in one go; it sorts your thoughts, says what each one means, and offers a next step.</p>
+        <div class="pills"><span class="pill-price">Free</span><span class="pill-tag">Web app</span><span class="pill-tag">Mobile friendly</span></div>
+        <a class="cta" href="breakthru/">View Breakthru <span class="arrow" aria-hidden="true">&rarr;</span></a>
+      </div>
+      <a class="app-shot" href="breakthru/" tabindex="-1" aria-hidden="true"><img src="assets/breakthru-card.png" alt="" loading="lazy" style="aspect-ratio: 2000 / 1275"></a>
+    </article>
 
     <article class="app app--catchup">
       <div class="app-info">
