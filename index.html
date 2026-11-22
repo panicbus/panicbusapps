@@ -72,25 +72,10 @@
     mix-blend-mode: lighten;
     pointer-events: none;
   }
-  /* Fills the gap between the logo and the nav, bleeding into the header's
-     padding so the sketches get the band's full height. */
-  .sketch-hero {
-    flex: 1;
-    min-width: 0;
-    width: 100%;
-    margin: -18px 24px;
-    height: 106px;   /* the band's full height: the 70px logo row plus its padding */
-    align-self: center;
-    object-fit: contain;
-  }
   .sketch-footer {
     width: 100%;
     aspect-ratio: 2240 / 360;
     margin-top: 28px;
-  }
-  /* Below 1000px there is no room for the header sketch in the fixed band. */
-  @media (max-width: 999px) {
-    .sketch-hero { display: none; }
   }
 
   /* Header: fixed to the top of the screen for the whole page. */
@@ -103,7 +88,7 @@
   }
   .site-header {
     display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between;
-    gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--border);
+    gap: 24px; padding: 10px 0; border-bottom: 1px solid var(--border);
   }
   .brand { display: block; flex: none; line-height: 0; }
   .brand img { width: 260px; height: auto; }
@@ -173,8 +158,6 @@
      bottom refines each top for cards taller than the viewport and drives
      the shrink and dim on cards that are being covered. */
   .stack { --stack-top: 24px; --stack-step: 16px; display: flex; flex-direction: column; gap: 40px; padding-bottom: 8px; }
-  /* Spacer at the end of the stack: the finished stack holds still while it scrolls past. */
-  .stack::after { content: ""; flex: none; height: 30vh; }
   .app {
     --i: 0;
     --p: 0;
@@ -185,7 +168,7 @@
     background: var(--bg-card); border: 1px solid var(--border);
     box-shadow: 0 -16px 40px rgba(0,0,0,0.45);
     transform-origin: 50% 0;
-    transform: scale(calc(1 - var(--p) * 0.06));
+    transform: scale(calc(1 - max(var(--p), var(--s, 0)) * 0.06));
   }
   /* Dims a card as the next one covers it. */
   .app::after {
@@ -294,7 +277,7 @@
   @media (max-width: 680px) {
     .container { padding: 0 20px; }
     .brand img { width: 190px; }
-    .site-header { padding: 14px 0; }
+    .site-header { padding: 8px 0; }
     .site-nav { display: none; }
     .stack { --stack-top: 12px; --stack-step: 10px; gap: 24px; }
     .app { gap: 28px; padding: 24px 20px 28px; border-radius: 20px; }
@@ -322,7 +305,6 @@
 <div class="container">
   <header class="site-header">
     <a class="brand" href="./"><img src="assets/studios/panicbus-logo.svg" alt="Panicbus Studios" width="400" height="108"></a>
-    <video class="sketch sketch-hero" data-sketch="hero" muted loop playsinline preload="none" aria-hidden="true"></video>
     <nav class="site-nav" aria-label="Main">
       <a href="about/">About</a>
       <a class="pill" href="mailto:nicocrisafulli@gmail.com">Get in touch</a>
@@ -593,6 +575,11 @@
       p = p < 0 ? 0 : p > 1 ? 1 : p;
       cards[i].style.setProperty('--p', p.toFixed(3));
     }
+    // The last card shrinks to match the others as it lands (no dim, since
+    // nothing covers it), then the finished stack scrolls away together.
+    var lastCard = cards[cards.length - 1], li = cards.length - 1;
+    var lp = 1 - (lastCard.getBoundingClientRect().top - tops[li]) / lastCard.offsetHeight;
+    lastCard.style.setProperty('--s', (lp < 0 ? 0 : lp > 1 ? 1 : lp).toFixed(3));
   }
 
   window.addEventListener('scroll', function () {
