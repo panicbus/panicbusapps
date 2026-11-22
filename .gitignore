@@ -1,1 +1,4 @@
 .DS_Store
+
+# Playwright MCP screenshots saved while checking pages
+.playwright-mcp/
