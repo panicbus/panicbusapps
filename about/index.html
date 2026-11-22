@@ -36,12 +36,11 @@
   a:hover { color: #FFD07A; }
   .container { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
 
-  /* Header: fixed to the top of the screen, same as the homepage. The body is
-     padded by the header's height so nothing starts underneath it. */
-  :root { --head: 91px; }
-  body { padding-top: var(--head); }
+  /* Header: stays at the top of the screen, same as the homepage. Sticky
+     rather than fixed, so it does not jump when a phone's address bar shrinks. */
+  :root { --head: 72px; }
   html { scroll-padding-top: var(--head); }
-  .site-head { position: fixed; z-index: 40; top: 0; left: 0; right: 0; background: var(--bg); }
+  .site-head { position: sticky; z-index: 40; top: 0; background: var(--bg); }
   .site-header {
     display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
     gap: 24px; padding: 10px 0; border-bottom: 1px solid var(--border);
@@ -120,7 +119,7 @@
 
   .site-footer {
     display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px;
-    padding: 28px 0 40px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 14px;
+    padding: 28px 0 12px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 14px;
   }
   .site-footer a { color: var(--text-muted); }
   .site-footer a:hover { color: var(--text); }
@@ -159,15 +158,22 @@
 
   @media (max-width: 680px) {
     .container { padding: 0 20px; }
-    :root { --head: 68px; }
+    :root { --head: 57px; }
     .brand img { width: 190px; }
-    .site-header { padding: 8px 0; }
-    .site-nav { display: none; }
-    .layout { gap: 48px; padding: 48px 0 72px; }
-    .profile { max-width: none; }
-    .profile .photo { max-width: 280px; }
+    .site-header { padding: 8px 0; flex-wrap: nowrap; }
+    .site-nav { gap: 0; }
+    .site-nav .pill, .site-nav a[aria-current="page"] { display: none; }
+    .site-nav a.apps {
+      display: inline-flex; align-items: center; min-height: 40px; padding: 0 18px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.22); font-size: 15px;
+    }
+    .layout { gap: 48px; padding: 40px 0 72px; }
+    /* Photo, name and links centered, with a round photo. */
+    .profile { max-width: none; align-items: center; text-align: center; }
+    .profile .photo { width: 200px; max-width: 200px; border-radius: 50%; }
+    .contact { align-items: center; }
     .resume { gap: 56px; }
-    .bus-lane { height: 80px; }
+    .bus-lane { height: 72px; }
     .lane-bus { width: 80px; bottom: 16px; }
     .bus-lane::after { bottom: 14px; }
   }
@@ -188,7 +194,7 @@
   <header class="site-header">
     <a class="brand" href="../"><img src="../assets/studios/panicbus-logo.svg" alt="Panicbus Studios" width="400" height="108"></a>
     <nav class="site-nav" aria-label="Main">
-      <a href="../#apps">Apps</a>
+      <a class="apps" href="../#apps">Apps</a>
       <a href="./" aria-current="page">About</a>
       <a class="pill" href="mailto:nicocrisafulli@gmail.com">Get in touch</a>
     </nav>
@@ -270,7 +276,7 @@
           <a class="project" href="../breakthru/">
             <span class="name"><img src="../breakthru/breakthru-icon.png" alt="" width="26" height="26" style="border-radius: 6px">Breakthru</span>
             <span class="desc">AI journal built on Getting Things Done that turns a brain dump into next steps.</span>
-            <span class="stack">Web app · Mobile friendly</span>
+            <span class="stack">TypeScript · React · Web app · Mobile friendly</span>
           </a>
           <a class="project" href="../catchup/">
             <span class="name"><img src="../catchup/catchup-icon.svg" alt="" width="26" height="26">Catch Up</span>
