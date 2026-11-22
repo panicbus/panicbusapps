@@ -102,6 +102,9 @@ nav .inner { display: grid; grid-template-columns: 1fr auto 1fr; align-items: ce
 .split-text a { color: var(--accent); font-weight: 600; text-decoration: none; }
 .split-text a:hover { text-decoration: underline; }
 .split-img { width: 100%; border-radius: 12px; border: 1px solid var(--img-border); box-shadow: 0 14px 40px -18px rgba(28,34,48,0.28); display: block; }
+.split-combo { position: relative; padding: 0 0 56px 0; }
+.split-combo .split-img { width: 86%; }
+.split-combo .phone-frame { position: absolute; right: 0; bottom: 0; width: 160px; margin: 0; }
 
 .dual { padding: 64px 0; text-align: center; }
 .dual-row { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; align-items: flex-start; margin-top: 8px; }
@@ -150,6 +153,8 @@ footer { padding: 40px 0; border-top: 1px solid var(--border); text-align: cente
   .trust-grid { grid-template-columns: 1fr; }
   nav .inner { grid-template-columns: auto auto; justify-content: space-between; }
   .nav-cta { display: none; }
+  .split-combo .split-img { width: 88%; }
+  .split-combo .phone-frame { width: 120px; border-width: 5px; border-radius: 20px; }
 }
 
 /* Studios logo stays under half the header width on phones. */
@@ -343,7 +348,10 @@ footer { padding: 40px 0; border-top: 1px solid var(--border); text-align: cente
       <p>Invite a teammate by email and choose their role right there. Staff can run check-ins and redemptions; owners can also change settings, manage staff, and export customers.</p>
       <p>Promote, demote, or deactivate anytime. Nothing to install on their end either.</p>
     </div>
-    <img src="tally-up-desktop-staff.png" alt="TallyUp staff page with an email invite form and a list of team members and their roles" class="split-img">
+    <div class="split-combo">
+      <img src="tally-up-desktop-staff.png" alt="TallyUp staff page with an email invite form and a list of team members and their roles" class="split-img">
+      <div class="phone-frame"><img src="tally-up-mobile-staff.png" alt="The same staff page on a phone, with the invite form and team members listed as cards"></div>
+    </div>
   </div>
 </div>
 </section>
