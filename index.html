@@ -276,20 +276,49 @@
     position: absolute; left: 0; bottom: 18px; width: 130px; height: auto;
     transform: translateX(-200px); will-change: transform;
   }
-  .lane-bus .body { animation: bus-bob 0.5s ease-in-out infinite alternate; }
-  .lane-bus .wheel { transform-box: fill-box; transform-origin: center; animation: bus-wheel 0.6s linear infinite; }
-  .lane-bus .streak { transform-box: fill-box; transform-origin: right center; animation: bus-streak 0.4s ease-in-out infinite alternate; }
-  .lane-bus .streak:nth-child(2) { animation-delay: -0.15s; }
-  .lane-bus .streak:nth-child(3) { animation-delay: -0.3s; }
-  @keyframes bus-bob { from { transform: translateY(0); } to { transform: translateY(-2px); } }
-  @keyframes bus-wheel { to { transform: rotate(360deg); } }
-  @keyframes bus-streak { from { transform: scaleX(0.7); opacity: 0.7; } to { transform: scaleX(1.1); opacity: 1; } }
+  /* The wheels, bob and streaks are started fresh by the script on every
+     trip, so each pass looks exactly the same. */
+  .lane-bus .wheel { transform-box: fill-box; transform-origin: center; }
+  .lane-bus .streak { transform-box: fill-box; transform-origin: right center; }
   /* Reduced motion: the bus stays parked at the right end of the lane. */
   @media (prefers-reduced-motion: reduce) {
     .lane-bus { left: auto; right: max(24px, 6vw); transform: none; }
-    .lane-bus .body, .lane-bus .wheel, .lane-bus .streak { animation: none; }
     .lane-bus .streaks { display: none; }
   }
+
+  /* Down arrow at the bottom of the first screen, and the page dots on the
+     right that show where you are. Wide screens only. */
+  .scroll-cue {
+    position: absolute; left: 50%; bottom: 20px; z-index: 2;
+    display: flex; align-items: center; justify-content: center;
+    width: 48px; height: 48px; margin-left: -24px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.22); color: var(--text); background: rgba(22,22,24,0.6);
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+  .scroll-cue:hover { border-color: var(--amber); color: var(--amber); }
+  .scroll-cue svg { animation: cue-bob 1.6s ease-in-out infinite; }
+  @keyframes cue-bob { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(3px); } }
+  .page-dots {
+    position: fixed; z-index: 30; right: 24px; top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .page-dots button {
+    position: relative; display: flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px; padding: 0; border: 0; background: none; cursor: pointer;
+  }
+  .page-dots button::before {
+    content: ""; width: 8px; height: 8px; border-radius: 4px;
+    border: 1.5px solid var(--label); transition: height 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+  }
+  .page-dots button:hover::before { border-color: var(--text); }
+  .page-dots button[aria-current="true"]::before { height: 20px; background: var(--amber); border-color: var(--amber); }
+  .page-dots button span {
+    position: absolute; right: 30px; white-space: nowrap; font-size: 13px; color: var(--text-muted);
+    opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+  }
+  .page-dots button:hover span, .page-dots button:focus-visible span { opacity: 1; }
+  @media (max-width: 760px) { .scroll-cue, .page-dots { display: none; } }
+  @media (max-width: 1320px) { .page-dots { right: 8px; } }
 
   a:focus-visible, button:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
 
@@ -342,12 +371,12 @@
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    .cta:hover .arrow, .btn-amber:hover .arrow { animation: none; }
+    .cta:hover .arrow, .btn-amber:hover .arrow, .scroll-cue svg { animation: none; }
     .app-shot img { transition: none; }
     .app, .principle { transform: none; }
     .app::after, .principle::after { display: none; }
     .hero-pin { height: auto; }
-    .hero-stage { position: static; height: auto; }
+    .hero-stage { position: relative; top: auto; height: auto; }
   }
 </style>
 <script src="assets/analytics.js" defer></script>
@@ -416,6 +445,7 @@
             </div>
           </div>
         </section>
+        <a class="scroll-cue" href="#apps" aria-label="Skip to the apps"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="M6 13l6 6 6-6"/></svg></a>
       </div>
     </div>
 
@@ -556,7 +586,7 @@
   var head = document.querySelector('.site-head');
   var stacks = [];
 
-  function makeStack(container, cards, active, fit) {
+  function makeStack(container, cards, active, fit, pauseGap) {
     var tops = [];
     var on = false;
 
@@ -606,13 +636,22 @@
       // Cards with a smaller sticky top get a matching bottom margin (taken back
       // from the next card's top margin), so every card reaches the end of the
       // stack at the same moment and the stack scrolls away as one piece.
+      // On wide screens the next card waits until about 24px of scrolling
+      // after the current one has settled fully in view.
+      var gap = parseFloat(styles.rowGap) || 0;
       var last = tops[tops.length - 1];
+      var startY = container.getBoundingClientRect().top + window.scrollY;
+      var nat = 0;
       cards.forEach(function (card, i) {
+        // The scroll position where this card has settled; the page dots use it.
+        card.dataset.at = Math.round(startY + nat - tops[i]);
+        if (i === cards.length - 1) return;
         var extra = last - tops[i];
-        if (i < cards.length - 1 && extra > 0) {
-          card.style.marginBottom = extra + 'px';
-          cards[i + 1].style.marginTop = -extra + 'px';
-        }
+        var dist = gap;
+        if (!fitToScreen && pauseGap) dist = Math.max(gap, vh + 24 - tops[i] - h);
+        card.style.marginBottom = extra + 'px';
+        cards[i + 1].style.marginTop = (dist - gap - extra) + 'px';
+        nat += h + dist;
       });
     }
 
@@ -632,13 +671,13 @@
     return { measure: measure, update: update };
   }
 
-  function add(containerSel, cardSel, active, fit) {
+  function add(containerSel, cardSel, active, fit, pauseGap) {
     var container = document.querySelector(containerSel);
     if (!container) return;
     var cards = Array.prototype.slice.call(container.querySelectorAll(cardSel));
-    if (cards.length > 1) stacks.push(makeStack(container, cards, active, fit));
+    if (cards.length > 1) stacks.push(makeStack(container, cards, active, fit, pauseGap));
   }
-  add('.stack', '.app', function () { return true; }, function () { return window.matchMedia('(max-width: 680px)').matches; });
+  add('.stack', '.app', function () { return true; }, function () { return window.matchMedia('(max-width: 680px)').matches; }, true);
   add('.principles', '.principle', function () { return window.matchMedia('(max-width: 680px)').matches; });
   if (!stacks.length) return;
 
@@ -651,6 +690,7 @@
     document.documentElement.style.setProperty('--head', headH + 'px');
     stacks.forEach(function (st) { st.measure(headH, window.innerHeight); });
     updateAll();
+    window.dispatchEvent(new Event('stackmeasured'));
   }
 
   window.addEventListener('scroll', function () {
@@ -665,6 +705,70 @@
     updateAll();
   });
   measureAll();
+})();
+</script>
+
+<script>
+(function () {
+  // Page dots on the right and the down arrow on the first screen. The dots
+  // mark the intro, each app card and How I build; the current one is filled.
+  // Clicking a dot or the arrow scrolls to where that card has settled.
+  var wide = window.matchMedia('(min-width: 761px)');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var cue = document.querySelector('.scroll-cue');
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.stack .app'));
+  var approach = document.getElementById('approach');
+  var head = document.querySelector('.site-head');
+  var sections = [{ label: 'Intro', at: function () { return 0; } }];
+  cards.forEach(function (card) {
+    sections.push({ label: card.querySelector('.app-name').textContent, at: function () { return +card.dataset.at || 0; } });
+  });
+  if (approach) sections.push({ label: 'How I build', at: function () {
+    return Math.round(approach.getBoundingClientRect().top + window.scrollY - (head ? head.offsetHeight : 0));
+  } });
+
+  var nav = document.createElement('nav');
+  nav.className = 'page-dots';
+  nav.setAttribute('aria-label', 'Page sections');
+  var buttons = sections.map(function (sec) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-label', sec.label);
+    b.innerHTML = '<span aria-hidden="true"></span>';
+    b.firstChild.textContent = sec.label;
+    b.addEventListener('click', function () { go(sec.at()); });
+    nav.appendChild(b);
+    return b;
+  });
+  document.body.appendChild(nav);
+
+  function go(y) { window.scrollTo({ top: y, behavior: reduce.matches ? 'auto' : 'smooth' }); }
+  if (cue) cue.addEventListener('click', function (e) {
+    if (!cards.length) return;
+    e.preventDefault();
+    go(+cards[0].dataset.at || 0);
+  });
+
+  var ticking = false;
+  function update() {
+    ticking = false;
+    var y = window.scrollY, slack = window.innerHeight * 0.35, current = 0;
+    sections.forEach(function (sec, i) { if (i && y >= sec.at() - slack) current = i; });
+    buttons.forEach(function (b, i) {
+      if (i === current) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+    });
+    if (cue && wide.matches) {
+      var o = 1 - y / 160;
+      cue.style.opacity = o < 0 ? 0 : o;
+      cue.style.visibility = o <= 0 ? 'hidden' : '';
+    }
+  }
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, { passive: true });
+  window.addEventListener('stackmeasured', update);
+  window.addEventListener('resize', update);
+  update();
 })();
 </script>
 
@@ -752,14 +856,38 @@
   var SPEED = 200;   // pixels per second
   var PAUSE = 7000;  // milliseconds between trips
   var MIN_TRIP = 5000;  // so the trip still takes a while on a narrow phone
+  var wheels = bus.querySelectorAll('.wheel');
+  var body = bus.querySelector('.body');
+  var streaks = bus.querySelectorAll('.streak');
+  // Wheel spin, body bob and exhaust streaks start from the same point on
+  // every trip and stop when the bus is off screen.
+  function startParts() {
+    var parts = [];
+    wheels.forEach(function (el) {
+      parts.push(el.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(360deg)' }],
+        { duration: 600, iterations: Infinity, easing: 'linear' }));
+    });
+    parts.push(body.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-2px)' }],
+      { duration: 500, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' }));
+    streaks.forEach(function (el, i) {
+      parts.push(el.animate(
+        [{ transform: 'scaleX(0.7)', opacity: 0.7 }, { transform: 'scaleX(1.1)', opacity: 1 }],
+        { duration: 400, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out', delay: -150 * i }));
+    });
+    return parts;
+  }
   function drive() {
+    var parts = startParts();
     var w = bus.getBoundingClientRect().width;
     var from = -w - 20, to = lane.clientWidth + 20;
     var trip = bus.animate(
       [{ transform: 'translateX(' + from + 'px)' }, { transform: 'translateX(' + to + 'px)' }],
       { duration: Math.max(MIN_TRIP, (to - from) / SPEED * 1000), easing: 'linear', fill: 'forwards' }
     );
-    trip.onfinish = function () { setTimeout(drive, PAUSE); };
+    trip.onfinish = function () {
+      parts.forEach(function (a) { a.cancel(); });
+      setTimeout(drive, PAUSE);
+    };
   }
   var seen = new IntersectionObserver(function (entries) {
     if (entries[0].isIntersecting) { seen.disconnect(); drive(); }

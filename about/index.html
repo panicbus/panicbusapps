@@ -141,18 +141,13 @@
     position: absolute; left: 0; bottom: 18px; width: 130px; height: auto;
     transform: translateX(-200px); will-change: transform;
   }
-  .lane-bus .body { animation: bus-bob 0.5s ease-in-out infinite alternate; }
-  .lane-bus .wheel { transform-box: fill-box; transform-origin: center; animation: bus-wheel 0.6s linear infinite; }
-  .lane-bus .streak { transform-box: fill-box; transform-origin: right center; animation: bus-streak 0.4s ease-in-out infinite alternate; }
-  .lane-bus .streak:nth-child(2) { animation-delay: -0.15s; }
-  .lane-bus .streak:nth-child(3) { animation-delay: -0.3s; }
-  @keyframes bus-bob { from { transform: translateY(0); } to { transform: translateY(-2px); } }
-  @keyframes bus-wheel { to { transform: rotate(360deg); } }
-  @keyframes bus-streak { from { transform: scaleX(0.7); opacity: 0.7; } to { transform: scaleX(1.1); opacity: 1; } }
+  /* The wheels, bob and streaks are started fresh by the script on every
+     trip, so each pass looks exactly the same. */
+  .lane-bus .wheel { transform-box: fill-box; transform-origin: center; }
+  .lane-bus .streak { transform-box: fill-box; transform-origin: right center; }
   /* Reduced motion: the bus stays parked at the right end of the lane. */
   @media (prefers-reduced-motion: reduce) {
     .lane-bus { left: auto; right: max(24px, 6vw); transform: none; }
-    .lane-bus .body, .lane-bus .wheel, .lane-bus .streak { animation: none; }
     .lane-bus .streaks { display: none; }
   }
 
@@ -355,14 +350,38 @@
   var SPEED = 200;   // pixels per second
   var PAUSE = 7000;  // milliseconds between trips
   var MIN_TRIP = 5000;  // so the trip still takes a while on a narrow phone
+  var wheels = bus.querySelectorAll('.wheel');
+  var body = bus.querySelector('.body');
+  var streaks = bus.querySelectorAll('.streak');
+  // Wheel spin, body bob and exhaust streaks start from the same point on
+  // every trip and stop when the bus is off screen.
+  function startParts() {
+    var parts = [];
+    wheels.forEach(function (el) {
+      parts.push(el.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(360deg)' }],
+        { duration: 600, iterations: Infinity, easing: 'linear' }));
+    });
+    parts.push(body.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-2px)' }],
+      { duration: 500, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' }));
+    streaks.forEach(function (el, i) {
+      parts.push(el.animate(
+        [{ transform: 'scaleX(0.7)', opacity: 0.7 }, { transform: 'scaleX(1.1)', opacity: 1 }],
+        { duration: 400, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out', delay: -150 * i }));
+    });
+    return parts;
+  }
   function drive() {
+    var parts = startParts();
     var w = bus.getBoundingClientRect().width;
     var from = -w - 20, to = lane.clientWidth + 20;
     var trip = bus.animate(
       [{ transform: 'translateX(' + from + 'px)' }, { transform: 'translateX(' + to + 'px)' }],
       { duration: Math.max(MIN_TRIP, (to - from) / SPEED * 1000), easing: 'linear', fill: 'forwards' }
     );
-    trip.onfinish = function () { setTimeout(drive, PAUSE); };
+    trip.onfinish = function () {
+      parts.forEach(function (a) { a.cancel(); });
+      setTimeout(drive, PAUSE);
+    };
   }
   var seen = new IntersectionObserver(function (entries) {
     if (entries[0].isIntersecting) { seen.disconnect(); drive(); }
