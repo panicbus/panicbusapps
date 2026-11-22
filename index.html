@@ -134,6 +134,8 @@
      bottom refines each top for cards taller than the viewport and drives
      the shrink and dim on cards that are being covered. */
   .stack { --stack-top: 24px; --stack-step: 16px; display: flex; flex-direction: column; gap: 40px; padding-bottom: 8px; }
+  /* Spacer at the end of the stack: the finished stack holds still while it scrolls past. */
+  .stack::after { content: ""; flex: none; height: 30vh; }
   .app {
     --i: 0;
     --p: 0;
@@ -464,13 +466,28 @@
     var base = parseFloat(styles.getPropertyValue('--stack-top')) || 0;
     var step = parseFloat(styles.getPropertyValue('--stack-step')) || 0;
     var vh = window.innerHeight;
+    // Same height for every card, so the finished stack lines up and leaves together.
+    cards.forEach(function (card) { card.style.minHeight = ''; card.style.marginTop = ''; card.style.marginBottom = ''; });
+    var h = Math.max.apply(null, cards.map(function (card) { return card.offsetHeight; }));
     cards.forEach(function (card, i) {
       card.style.setProperty('--i', i);
+      card.style.minHeight = h + 'px';
       var top = base + i * step;
-      var fit = vh - card.offsetHeight - 16;
+      var fit = vh - h - 16;
       if (fit < top) top = fit;
       card.style.top = top + 'px';
       tops[i] = top;
+    });
+    // Cards with a smaller sticky top get a matching bottom margin (taken back
+    // from the next card's top margin), so every card reaches the end of the
+    // stack at the same moment and the stack scrolls away as one piece.
+    var last = tops[tops.length - 1];
+    cards.forEach(function (card, i) {
+      var extra = last - tops[i];
+      if (i < cards.length - 1 && extra > 0) {
+        card.style.marginBottom = extra + 'px';
+        cards[i + 1].style.marginTop = -extra + 'px';
+      }
     });
     update();
   }
