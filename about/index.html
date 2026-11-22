@@ -18,8 +18,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0C0C0E;
-    --bg-card: #161618;
+    --bg: #161618;
+    --bg-card: #222125;
     --text: #F0F0F0;
     --text-muted: #9A9A9A;
     --text-soft: #A8A8A8;
@@ -36,12 +36,18 @@
   a:hover { color: #FFD07A; }
   .container { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
 
+  /* Header: fixed to the top of the screen, same as the homepage. The body is
+     padded by the header's height so nothing starts underneath it. */
+  :root { --head: 91px; }
+  body { padding-top: var(--head); }
+  html { scroll-padding-top: var(--head); }
+  .site-head { position: fixed; z-index: 40; top: 0; left: 0; right: 0; background: var(--bg); }
   .site-header {
     display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
-    gap: 24px; padding: 36px 0 28px; border-bottom: 1px solid var(--border);
+    gap: 24px; padding: 10px 0; border-bottom: 1px solid var(--border);
   }
   .brand { display: block; line-height: 0; }
-  .brand img { width: 400px; height: auto; }
+  .brand img { width: 260px; height: auto; }
   .site-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 32px; font-size: 16px; font-weight: 500; }
   .site-nav a { text-decoration: none; color: var(--text); }
   .site-nav a:hover { color: var(--amber); }
@@ -90,7 +96,8 @@
   .job ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 16px; line-height: 1.55; color: #D6D6D6; }
 
   .projects { display: flex; flex-direction: column; gap: 24px; }
-  .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .project-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 560px) { .project-grid { grid-template-columns: 1fr; } }
   .project {
     display: flex; flex-direction: column; gap: 10px; padding: 24px; border-radius: 16px;
     background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08); text-decoration: none; color: var(--text);
@@ -120,19 +127,53 @@
 
   a:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
 
+  /* Bus lane under the footer. It spans the whole window so the bus can drive
+     fully off both edges; overflow-x: clip on the body keeps that from adding
+     a sideways scroll. */
+  body { overflow-x: clip; }
+  .bus-lane {
+    position: relative; height: 104px; margin: 0 calc(50% - 50vw); overflow: hidden;
+  }
+  .bus-lane::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 16px; height: 2px;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.10) 0 28px, transparent 28px 56px);
+  }
+  .lane-bus {
+    position: absolute; left: 0; bottom: 18px; width: 130px; height: auto;
+    transform: translateX(-200px); will-change: transform;
+  }
+  .lane-bus .body { animation: bus-bob 0.5s ease-in-out infinite alternate; }
+  .lane-bus .wheel { transform-box: fill-box; transform-origin: center; animation: bus-wheel 0.6s linear infinite; }
+  .lane-bus .streak { transform-box: fill-box; transform-origin: right center; animation: bus-streak 0.4s ease-in-out infinite alternate; }
+  .lane-bus .streak:nth-child(2) { animation-delay: -0.15s; }
+  .lane-bus .streak:nth-child(3) { animation-delay: -0.3s; }
+  @keyframes bus-bob { from { transform: translateY(0); } to { transform: translateY(-2px); } }
+  @keyframes bus-wheel { to { transform: rotate(360deg); } }
+  @keyframes bus-streak { from { transform: scaleX(0.7); opacity: 0.7; } to { transform: scaleX(1.1); opacity: 1; } }
+  /* Reduced motion: the bus stays parked at the right end of the lane. */
+  @media (prefers-reduced-motion: reduce) {
+    .lane-bus { left: auto; right: max(24px, 6vw); transform: none; }
+    .lane-bus .body, .lane-bus .wheel, .lane-bus .streak { animation: none; }
+    .lane-bus .streaks { display: none; }
+  }
+
   @media (max-width: 680px) {
     .container { padding: 0 20px; }
-    .brand img { width: 280px; }
-    .site-header { padding-bottom: 20px; }
+    :root { --head: 68px; }
+    .brand img { width: 190px; }
+    .site-header { padding: 8px 0; }
     .site-nav { display: none; }
     .layout { gap: 48px; padding: 48px 0 72px; }
     .profile { max-width: none; }
     .profile .photo { max-width: 280px; }
     .resume { gap: 56px; }
+    .bus-lane { height: 80px; }
+    .lane-bus { width: 80px; bottom: 16px; }
+    .bus-lane::after { bottom: 14px; }
   }
   @media print {
-    body { background: #fff; color: #111; }
-    .site-header, .site-footer, .btn-outline { display: none; }
+    body { background: #fff; color: #111; padding-top: 0; }
+    .site-header, .site-footer, .btn-outline, .bus-lane { display: none; }
     a { color: #111; }
     .summary p:last-child, .job .body > p, .job ul, .project .desc, .skills dd { color: #333; }
     .project { background: none; border-color: #ccc; }
@@ -142,6 +183,7 @@
 </head>
 <body>
 
+<div class="site-head">
 <div class="container">
   <header class="site-header">
     <a class="brand" href="../"><img src="../assets/studios/panicbus-logo.svg" alt="Panicbus Studios" width="400" height="108"></a>
@@ -151,6 +193,10 @@
       <a class="pill" href="mailto:nicocrisafulli@gmail.com">Get in touch</a>
     </nav>
   </header>
+</div>
+</div>
+
+<div class="container">
 
   <div class="layout">
     <aside class="profile">
@@ -221,6 +267,11 @@
       <section class="projects" aria-labelledby="proj">
         <h2 id="proj" class="section-label">Selected projects</h2>
         <div class="project-grid">
+          <a class="project" href="../breakthru/">
+            <span class="name"><img src="../breakthru/breakthru-icon.png" alt="" width="26" height="26" style="border-radius: 6px">Breakthru</span>
+            <span class="desc">AI journal built on Getting Things Done that turns a brain dump into next steps.</span>
+            <span class="stack">Web app · Mobile friendly</span>
+          </a>
           <a class="project" href="../catchup/">
             <span class="name"><img src="../catchup/catchup-icon.svg" alt="" width="26" height="26">Catch Up</span>
             <span class="desc">AI-scored news aggregator, shipped in under three weeks.</span>
@@ -263,7 +314,53 @@
     <span>&copy; 2026 Panicbus Studios &middot; Built in Alameda, CA</span>
     <a href="../">&larr; Back to all apps</a>
   </footer>
+  <div class="bus-lane" aria-hidden="true">
+    <svg class="lane-bus" id="lane-bus" viewBox="0 0 200 116">
+      <g class="streaks">
+        <rect class="streak" x="0" y="30" width="42" height="9" rx="4.5" fill="#FF5A47"/>
+        <rect class="streak" x="10" y="51" width="44" height="11" rx="5.5" fill="#FF5A47"/>
+        <rect class="streak" x="2" y="73" width="34" height="9" rx="4.5" fill="#FF5A47"/>
+      </g>
+      <g class="body">
+        <rect x="56" y="16" width="140" height="80" rx="18" fill="#FFB12B"/>
+        <rect x="64" y="20" width="124" height="8" rx="4" fill="#FFC65C"/>
+        <rect x="68" y="34" width="26" height="24" rx="6" fill="#17141C"/>
+        <rect x="100" y="34" width="26" height="24" rx="6" fill="#17141C"/>
+        <path d="M132 34 h32 a8 8 0 0 1 8 8 v8 a8 8 0 0 1 -8 8 h-32 z" fill="#17141C"/>
+        <circle cx="188" cy="78" r="6" fill="#FFF3D6"/>
+      </g>
+      <g class="wheel"><circle cx="92" cy="96" r="16" fill="#17141C"/><circle cx="92" cy="96" r="6" fill="#FFB12B"/><rect x="90" y="82" width="4" height="9" rx="2" fill="#FFB12B"/></g>
+      <g class="wheel"><circle cx="168" cy="96" r="16" fill="#17141C"/><circle cx="168" cy="96" r="6" fill="#FFB12B"/><rect x="166" y="82" width="4" height="9" rx="2" fill="#FFB12B"/></g>
+    </svg>
+  </div>
 </div>
+
+<script>
+(function () {
+  // The bus drives across the lane at an easy pace, waits 7 seconds once it is
+  // off the right edge, then drives across again. It starts the first time the
+  // lane scrolls into view. Reduced motion leaves it parked.
+  var bus = document.getElementById('lane-bus');
+  var lane = bus && bus.parentNode;
+  if (!bus || !bus.animate || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var SPEED = 200;   // pixels per second
+  var PAUSE = 7000;  // milliseconds between trips
+  var MIN_TRIP = 5000;  // so the trip still takes a while on a narrow phone
+  function drive() {
+    var w = bus.getBoundingClientRect().width;
+    var from = -w - 20, to = lane.clientWidth + 20;
+    var trip = bus.animate(
+      [{ transform: 'translateX(' + from + 'px)' }, { transform: 'translateX(' + to + 'px)' }],
+      { duration: Math.max(MIN_TRIP, (to - from) / SPEED * 1000), easing: 'linear', fill: 'forwards' }
+    );
+    trip.onfinish = function () { setTimeout(drive, PAUSE); };
+  }
+  var seen = new IntersectionObserver(function (entries) {
+    if (entries[0].isIntersecting) { seen.disconnect(); drive(); }
+  });
+  seen.observe(lane);
+})();
+</script>
 
 </body>
 </html>
