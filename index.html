@@ -78,14 +78,11 @@
     margin-top: 28px;
   }
 
-  /* Header: fixed to the top of the screen for the whole page. */
-  html { scroll-padding-top: var(--head, 110px); }
-  .site-head {
-    position: fixed; z-index: 40; top: 0; left: 0; right: 0;
-    /* Opaque, so the header sketch (black, blended with lighten) has a solid
-       ground to blend into instead of showing a dark box. */
-    background: var(--bg);
-  }
+  /* Header: stays at the top of the screen for the whole page. It is sticky
+     rather than fixed, so it keeps its place in the page and does not jump
+     when a phone's address bar shrinks on scroll. */
+  html { scroll-padding-top: var(--head, 72px); }
+  .site-head { position: sticky; z-index: 40; top: 0; background: var(--bg); }
   .site-header {
     display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between;
     gap: 24px; padding: 10px 0; border-bottom: 1px solid var(--border);
@@ -108,8 +105,9 @@
      phone sits under the copy and draws as it scrolls into view. */
   .hero-pin { position: relative; height: 200vh; }
   .hero-stage {
-    position: sticky; top: 0; height: 100vh; height: 100svh;
-    padding-top: var(--head, 110px); display: flex; flex-direction: column;
+    position: sticky; top: var(--head, 72px);
+    height: calc(100vh - var(--head, 72px)); height: calc(100svh - var(--head, 72px));
+    display: flex; flex-direction: column;
   }
   .hero {
     flex: 1; display: flex; align-items: center; gap: 48px;
@@ -131,7 +129,7 @@
     position: absolute; inset: 7% 8%; width: 84%; height: 86%; overflow: visible;
     fill: none; stroke: var(--label); stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round;
   }
-  .phone-wire path[pathLength] { stroke-dasharray: 1; stroke-dashoffset: 1; }
+  .phone-wire path.line { opacity: 0; }
   .phone-wire .shape, .phone-bus * { stroke: none; }
   .phone-wire .shape { transform-box: fill-box; transform-origin: center; opacity: 0; }
   .eyebrow {
@@ -278,8 +276,24 @@
     .container { padding: 0 20px; }
     .brand img { width: 190px; }
     .site-header { padding: 8px 0; }
-    .site-nav { display: none; }
+    .site-nav { gap: 0; }
+    .site-nav .pill { display: none; }
+    .site-nav a.about {
+      display: inline-flex; align-items: center; min-height: 40px; padding: 0 18px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.22); font-size: 15px;
+    }
     .stack { --stack-top: 12px; --stack-step: 10px; gap: 24px; }
+    /* How I build cards stack the same way as the app cards. */
+    .principles { --stack-top: 12px; --stack-step: 10px; display: flex; flex-direction: column; gap: 24px; }
+    .principle {
+      --p: 0; position: sticky; top: calc(var(--head, 72px) + 12px);
+      box-shadow: 0 -12px 30px rgba(0,0,0,0.45);
+      transform-origin: 50% 0; transform: scale(calc(1 - max(var(--p), var(--s, 0)) * 0.06));
+    }
+    .principle::after {
+      content: ""; position: absolute; inset: 0; border-radius: inherit;
+      background: #000; opacity: calc(var(--p) * 0.45); pointer-events: none;
+    }
     .app { gap: 28px; padding: 24px 20px 28px; border-radius: 20px; }
     .app-name { font-size: 36px; }
     .approach { padding-top: 72px; }
@@ -289,8 +303,8 @@
     html { scroll-behavior: auto; }
     .cta:hover .arrow, .btn-amber:hover .arrow { animation: none; }
     .app-shot img { transition: none; }
-    .app { transform: none; }
-    .app::after { display: none; }
+    .app, .principle { transform: none; }
+    .app::after, .principle::after { display: none; }
     .hero-pin { height: auto; }
     .hero-stage { position: static; height: auto; }
   }
@@ -306,7 +320,7 @@
   <header class="site-header">
     <a class="brand" href="./"><img src="assets/studios/panicbus-logo.svg" alt="Panicbus Studios" width="400" height="108"></a>
     <nav class="site-nav" aria-label="Main">
-      <a href="about/">About</a>
+      <a class="about" href="about/">About</a>
       <a class="pill" href="mailto:nicocrisafulli@gmail.com">Get in touch</a>
     </nav>
   </header>
@@ -341,21 +355,21 @@
                   <circle cx="92" cy="96" r="16" fill="#17141C"/><circle cx="168" cy="96" r="16" fill="#17141C"/>
                   <circle cx="92" cy="96" r="6" fill="#FFB12B"/><circle cx="168" cy="96" r="6" fill="#FFB12B"/>
                 </g>
-                <path pathLength="1" d="M12 29 H52"/>
+                <path class="line" d="M12 29 H52"/>
                 <rect class="shape" x="70" y="25" width="18" height="8" rx="4" fill="#FFB12B"/>
-                <path pathLength="1" d="M12 40 H88 V78 H12 Z"/>
+                <path class="line" d="M12 40 H88 V78 H12 Z"/>
                 <rect class="shape" x="12" y="40" width="22" height="38" fill="#7E8BF0" opacity=".85"/>
-                <path pathLength="1" d="M40 52 H80 M40 62 H68"/>
-                <path pathLength="1" d="M50 104 m-20 0 a20 20 0 1 0 40 0 a20 20 0 1 0 -40 0"/>
+                <path class="line" d="M40 52 H80 M40 62 H68"/>
+                <path class="line" d="M50 104 m-20 0 a20 20 0 1 0 40 0 a20 20 0 1 0 -40 0"/>
                 <path class="shape" d="M50 84 A20 20 0 0 1 69.6 108 L50 104 Z" fill="#FF5A47"/>
-                <path pathLength="1" d="M50 104 m-9 0 a9 9 0 1 0 18 0 a9 9 0 1 0 -18 0"/>
+                <path class="line" d="M50 104 m-9 0 a9 9 0 1 0 18 0 a9 9 0 1 0 -18 0"/>
                 <rect class="shape" x="16" y="138" width="5" height="12" fill="#4FC996"/>
                 <rect class="shape" x="36" y="130" width="5" height="20" fill="#4FC996"/>
                 <rect class="shape" x="56" y="124" width="5" height="26" fill="#FFB12B"/>
                 <rect class="shape" x="76" y="134" width="5" height="16" fill="#4FC996"/>
-                <path pathLength="1" d="M18.5 150 V138 M28 150 V132 M38.5 150 V130 M48 150 V136 M58.5 150 V124 M68 150 V140 M78.5 150 V134"/>
-                <path pathLength="1" d="M12 152 H88"/>
-                <path pathLength="1" d="M12 166 H88 M12 176 H70"/>
+                <path class="line" d="M18.5 150 V138 M28 150 V132 M38.5 150 V130 M48 150 V136 M58.5 150 V124 M68 150 V140 M78.5 150 V134"/>
+                <path class="line" d="M12 152 H88"/>
+                <path class="line" d="M12 166 H88 M12 176 H70"/>
                 <rect class="shape" x="12" y="184" width="30" height="8" rx="4" fill="#FF5A47"/>
               </svg>
             </div>
@@ -520,78 +534,104 @@
 
 <script>
 (function () {
-  // Stacking app cards. CSS does the stacking with position: sticky; this
-  // keeps tall cards readable and adds the shrink and dim as each one is covered.
-  var cards = Array.prototype.slice.call(document.querySelectorAll('.stack .app'));
-  if (!cards.length) return;
+  // Stacking cards. CSS does the stacking with position: sticky; this keeps
+  // tall cards readable, lines the finished stack up so it leaves as one
+  // piece, and adds the shrink and dim as each card is covered. The app cards
+  // stack everywhere; the How I build cards stack only on phones.
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-  var tops = [];
-  var ticking = false;
+  var head = document.querySelector('.site-head');
+  var stacks = [];
 
-  // A card taller than the viewport would stick before its bottom was seen, so
-  // its top goes negative: it sticks once its bottom reaches the screen edge.
-  function measure() {
-    var styles = getComputedStyle(cards[0].parentNode);
-    var head = document.querySelector('.site-head');
-    var headH = head ? head.offsetHeight : 0;
-    document.documentElement.style.setProperty('--head', headH + 'px');
-    // Cards stick just below the fixed header.
-    var base = (parseFloat(styles.getPropertyValue('--stack-top')) || 0) + headH;
-    var step = parseFloat(styles.getPropertyValue('--stack-step')) || 0;
-    var vh = window.innerHeight;
-    // Same height for every card, so the finished stack lines up and leaves together.
-    cards.forEach(function (card) { card.style.minHeight = ''; card.style.marginTop = ''; card.style.marginBottom = ''; });
-    var h = Math.max.apply(null, cards.map(function (card) { return card.offsetHeight; }));
-    cards.forEach(function (card, i) {
-      card.style.setProperty('--i', i);
-      card.style.minHeight = h + 'px';
-      var top = base + i * step;
-      var fit = vh - h - 16;  // a card taller than the space left sticks by its bottom edge
-      if (fit < top) top = fit;
-      card.style.top = top + 'px';
-      tops[i] = top;
-    });
-    // Cards with a smaller sticky top get a matching bottom margin (taken back
-    // from the next card's top margin), so every card reaches the end of the
-    // stack at the same moment and the stack scrolls away as one piece.
-    var last = tops[tops.length - 1];
-    cards.forEach(function (card, i) {
-      var extra = last - tops[i];
-      if (i < cards.length - 1 && extra > 0) {
-        card.style.marginBottom = extra + 'px';
-        cards[i + 1].style.marginTop = -extra + 'px';
+  function makeStack(container, cards, active) {
+    var tops = [];
+    var on = false;
+
+    function reset() {
+      cards.forEach(function (card) {
+        card.style.minHeight = ''; card.style.marginTop = ''; card.style.marginBottom = '';
+        card.style.top = ''; card.style.removeProperty('--p'); card.style.removeProperty('--s');
+      });
+    }
+
+    // A card taller than the space below the header sticks by its bottom edge.
+    function measure(headH, vh) {
+      reset();
+      on = active();
+      if (!on) return;
+      var styles = getComputedStyle(container);
+      var base = (parseFloat(styles.getPropertyValue('--stack-top')) || 0) + headH;
+      var step = parseFloat(styles.getPropertyValue('--stack-step')) || 0;
+      // Same height for every card, so the finished stack lines up and leaves together.
+      var h = Math.max.apply(null, cards.map(function (card) { return card.offsetHeight; }));
+      cards.forEach(function (card, i) {
+        card.style.setProperty('--i', i);
+        card.style.minHeight = h + 'px';
+        var top = Math.min(base + i * step, vh - h - 16);
+        card.style.top = top + 'px';
+        tops[i] = top;
+      });
+      // Cards with a smaller sticky top get a matching bottom margin (taken back
+      // from the next card's top margin), so every card reaches the end of the
+      // stack at the same moment and the stack scrolls away as one piece.
+      var last = tops[tops.length - 1];
+      cards.forEach(function (card, i) {
+        var extra = last - tops[i];
+        if (i < cards.length - 1 && extra > 0) {
+          card.style.marginBottom = extra + 'px';
+          cards[i + 1].style.marginTop = -extra + 'px';
+        }
+      });
+    }
+
+    function update() {
+      if (!on || reduce.matches) return;
+      for (var i = 0; i < cards.length - 1; i++) {
+        var p = 1 - (cards[i + 1].getBoundingClientRect().top - tops[i]) / cards[i].offsetHeight;
+        cards[i].style.setProperty('--p', (p < 0 ? 0 : p > 1 ? 1 : p).toFixed(3));
       }
-    });
-    update();
+      // The last card shrinks to match the others as it lands (no dim, since
+      // nothing covers it), then the finished stack scrolls away together.
+      var li = cards.length - 1;
+      var lp = 1 - (cards[li].getBoundingClientRect().top - tops[li]) / cards[li].offsetHeight;
+      cards[li].style.setProperty('--s', (lp < 0 ? 0 : lp > 1 ? 1 : lp).toFixed(3));
+    }
+
+    return { measure: measure, update: update };
   }
 
-  function update() {
-    ticking = false;
-    if (reduce.matches) return;
-    for (var i = 0; i < cards.length - 1; i++) {
-      var next = cards[i + 1].getBoundingClientRect().top;
-      var h = cards[i].offsetHeight;
-      var p = 1 - (next - tops[i]) / h;
-      p = p < 0 ? 0 : p > 1 ? 1 : p;
-      cards[i].style.setProperty('--p', p.toFixed(3));
-    }
-    // The last card shrinks to match the others as it lands (no dim, since
-    // nothing covers it), then the finished stack scrolls away together.
-    var lastCard = cards[cards.length - 1], li = cards.length - 1;
-    var lp = 1 - (lastCard.getBoundingClientRect().top - tops[li]) / lastCard.offsetHeight;
-    lastCard.style.setProperty('--s', (lp < 0 ? 0 : lp > 1 ? 1 : lp).toFixed(3));
+  function add(containerSel, cardSel, active) {
+    var container = document.querySelector(containerSel);
+    if (!container) return;
+    var cards = Array.prototype.slice.call(container.querySelectorAll(cardSel));
+    if (cards.length > 1) stacks.push(makeStack(container, cards, active));
+  }
+  add('.stack', '.app', function () { return true; });
+  add('.principles', '.principle', function () { return window.matchMedia('(max-width: 680px)').matches; });
+  if (!stacks.length) return;
+
+  var ticking = false;
+  var lastW = 0;
+  function updateAll() { ticking = false; stacks.forEach(function (st) { st.update(); }); }
+  function measureAll() {
+    lastW = window.innerWidth;
+    var headH = head ? head.offsetHeight : 0;
+    document.documentElement.style.setProperty('--head', headH + 'px');
+    stacks.forEach(function (st) { st.measure(headH, window.innerHeight); });
+    updateAll();
   }
 
   window.addEventListener('scroll', function () {
-    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    if (!ticking) { ticking = true; requestAnimationFrame(updateAll); }
   }, { passive: true });
-  window.addEventListener('resize', measure);
-  window.addEventListener('load', measure);
+  // A phone's address bar growing or shrinking only changes the height. Skipping
+  // those resizes keeps the layout still while you scroll.
+  window.addEventListener('resize', function () { if (window.innerWidth !== lastW) measureAll(); });
+  window.addEventListener('load', measureAll);
   reduce.addEventListener('change', function () {
-    cards.forEach(function (card) { card.style.setProperty('--p', 0); });
-    update();
+    stacks.forEach(function (st) { st.measure(head ? head.offsetHeight : 0, window.innerHeight); });
+    updateAll();
   });
-  measure();
+  measureAll();
 })();
 </script>
 
@@ -603,7 +643,13 @@
   if (!phone) return;
   var pin = document.querySelector('.hero-pin');
   var face = phone.querySelector('.phone-face');
-  var paths = phone.querySelectorAll('.phone-wire path[pathLength]');
+  var paths = phone.querySelectorAll('.phone-wire path.line');
+  // Dashes use each line's real length, which every browser measures the same way.
+  var lens = Array.prototype.map.call(paths, function (el) {
+    var L = el.getTotalLength();
+    el.setAttribute('stroke-dasharray', L + ' ' + L);
+    return L;
+  });
   var shapes = phone.querySelectorAll('.phone-wire .shape');
   var layers = phone.querySelectorAll('.phone-layer');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -617,7 +663,7 @@
   function render(d, turn) {
     paths.forEach(function (el, i) {
       var a = i / paths.length * .7, t = range(d, a, a + .3);
-      el.style.strokeDashoffset = 1 - t;
+      el.setAttribute('stroke-dashoffset', lens[i] * (1 - t));
       el.style.opacity = t > 0 ? 1 : 0;  // hides the round caps before a line starts
     });
     shapes.forEach(function (el, i) {
@@ -638,14 +684,18 @@
   function update() {
     ticking = false;
     if (reduce.matches) { render(1, 0); return; }  // finished drawing, held flat
-    var q;
     if (narrow.matches) {
-      // Plays while the phone travels from the bottom of the screen to the middle.
-      var r = phone.getBoundingClientRect(), vh = window.innerHeight;
-      q = range(vh - r.top, 0, vh * .55 + r.height * .5);
-    } else {
-      q = clamp(-pin.getBoundingClientRect().top / (pin.offsetHeight - window.innerHeight));
+      // Phones have little scroll before the cards, so the sketch starts half
+      // drawn and finishes over the first part of a screen of scrolling.
+      var q = range(window.scrollY, 0, window.innerHeight * .45);
+      render(.5 + .5 * range(q, 0, .7), range(q, .72, 1));
+      return;
     }
+    // The stage sticks just under the header, so progress runs from the page
+    // top until the pin's bottom reaches the bottom of the screen.
+    var headH = phone.ownerDocument.querySelector('.site-head').offsetHeight;
+    var r = pin.getBoundingClientRect();
+    var q = clamp((headH - r.top) / (pin.offsetHeight + headH - window.innerHeight));
     render(.22 + .78 * range(q, 0, .7), range(q, .72, 1));
   }
 
