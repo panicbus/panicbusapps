@@ -50,10 +50,7 @@
   }
 
 
-  /* Blueprint grid behind the whole page. The sketch videos are rendered on
-     pure black and blended with `lighten`, so the grid shows through them
-     with no visible tile edges. Nothing between them may create a stacking
-     context, or the blend would only see a transparent backdrop. */
+  /* Blueprint grid behind the whole page. */
   .grid {
     position: fixed;
     inset: 0;
@@ -66,16 +63,6 @@
       linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
     background-size: 200px 200px, 200px 200px, 40px 40px, 40px 40px;
     background-position: center top;
-  }
-  .sketch {
-    display: block;
-    mix-blend-mode: lighten;
-    pointer-events: none;
-  }
-  .sketch-footer {
-    width: 100%;
-    aspect-ratio: 2240 / 360;
-    margin-top: 28px;
   }
 
   /* Header: stays at the top of the screen for the whole page. It is sticky
@@ -268,12 +255,41 @@
   /* Footer */
   .site-footer {
     display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px;
-    padding: 28px 0 40px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 14px;
+    padding: 28px 0 12px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 14px;
   }
   .site-footer .links { display: flex; gap: 24px; }
-  .site-footer .sketch-footer { flex: 0 0 100%; }
   .site-footer a { color: var(--text-muted); }
   .site-footer a:hover { color: var(--text); }
+
+  /* Bus lane under the footer. It spans the whole window so the bus can drive
+     fully off both edges; overflow-x: clip on the body keeps that from adding
+     a sideways scroll. */
+  body { overflow-x: clip; }
+  .bus-lane {
+    position: relative; height: 104px; margin: 0 calc(50% - 50vw); overflow: hidden;
+  }
+  .bus-lane::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 16px; height: 2px;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.10) 0 28px, transparent 28px 56px);
+  }
+  .lane-bus {
+    position: absolute; left: 0; bottom: 18px; width: 130px; height: auto;
+    transform: translateX(-200px); will-change: transform;
+  }
+  .lane-bus .body { animation: bus-bob 0.5s ease-in-out infinite alternate; }
+  .lane-bus .wheel { transform-box: fill-box; transform-origin: center; animation: bus-wheel 0.6s linear infinite; }
+  .lane-bus .streak { transform-box: fill-box; transform-origin: right center; animation: bus-streak 0.4s ease-in-out infinite alternate; }
+  .lane-bus .streak:nth-child(2) { animation-delay: -0.15s; }
+  .lane-bus .streak:nth-child(3) { animation-delay: -0.3s; }
+  @keyframes bus-bob { from { transform: translateY(0); } to { transform: translateY(-2px); } }
+  @keyframes bus-wheel { to { transform: rotate(360deg); } }
+  @keyframes bus-streak { from { transform: scaleX(0.7); opacity: 0.7; } to { transform: scaleX(1.1); opacity: 1; } }
+  /* Reduced motion: the bus stays parked at the right end of the lane. */
+  @media (prefers-reduced-motion: reduce) {
+    .lane-bus { left: auto; right: max(24px, 6vw); transform: none; }
+    .lane-bus .body, .lane-bus .wheel, .lane-bus .streak { animation: none; }
+    .lane-bus .streaks { display: none; }
+  }
 
   a:focus-visible, button:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
 
@@ -320,7 +336,9 @@
     .app-shot img { height: 100%; aspect-ratio: auto !important; object-fit: cover; object-position: top center; }
     .app.no-shot .app-shot { display: none; }
     .approach { padding-top: 72px; }
-    .sketch-footer { aspect-ratio: 720 / 640; }
+    .bus-lane { height: 72px; }
+    .lane-bus { width: 80px; bottom: 16px; }
+    .bus-lane::after { bottom: 14px; }
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -506,54 +524,27 @@
   <footer class="site-footer">
     <span>&copy; 2026 Panicbus Studios &middot; Built in Alameda, CA</span>
     <span class="links"><a href="mailto:nicocrisafulli@gmail.com">Support</a><a href="https://www.linkedin.com/in/nicocrisafulli" target="_blank" rel="noopener">LinkedIn</a></span>
-    <video class="sketch sketch-footer" data-sketch="footer" muted loop playsinline preload="none" aria-hidden="true"></video>
   </footer>
+  <div class="bus-lane" aria-hidden="true">
+    <svg class="lane-bus" id="lane-bus" viewBox="0 0 200 116">
+      <g class="streaks">
+        <rect class="streak" x="0" y="30" width="42" height="9" rx="4.5" fill="#FF5A47"/>
+        <rect class="streak" x="10" y="51" width="44" height="11" rx="5.5" fill="#FF5A47"/>
+        <rect class="streak" x="2" y="73" width="34" height="9" rx="4.5" fill="#FF5A47"/>
+      </g>
+      <g class="body">
+        <rect x="56" y="16" width="140" height="80" rx="18" fill="#FFB12B"/>
+        <rect x="64" y="20" width="124" height="8" rx="4" fill="#FFC65C"/>
+        <rect x="68" y="34" width="26" height="24" rx="6" fill="#17141C"/>
+        <rect x="100" y="34" width="26" height="24" rx="6" fill="#17141C"/>
+        <path d="M132 34 h32 a8 8 0 0 1 8 8 v8 a8 8 0 0 1 -8 8 h-32 z" fill="#17141C"/>
+        <circle cx="188" cy="78" r="6" fill="#FFF3D6"/>
+      </g>
+      <g class="wheel"><circle cx="92" cy="96" r="16" fill="#17141C"/><circle cx="92" cy="96" r="6" fill="#FFB12B"/><rect x="90" y="82" width="4" height="9" rx="2" fill="#FFB12B"/></g>
+      <g class="wheel"><circle cx="168" cy="96" r="16" fill="#17141C"/><circle cx="168" cy="96" r="6" fill="#FFB12B"/><rect x="166" y="82" width="4" height="9" rx="2" fill="#FFB12B"/></g>
+    </svg>
+  </div>
 </div>
-
-<script>
-(function () {
-  // Reduced-motion visitors get each tile's poster (its first frame) and no video.
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var narrow = window.matchMedia('(max-width: 680px)');
-  var videos = document.querySelectorAll('video.sketch');
-  var noop = function () {};
-
-  function setup(video) {
-    var name = video.dataset.sketch === 'footer'
-      ? (narrow.matches ? 'footer-narrow' : 'footer-wide')
-      : video.dataset.sketch;
-    if (video.dataset.current === name) return;
-    video.dataset.current = name;
-    var base = 'assets/bg/home-' + name;
-    video.poster = base + '-poster.png';
-    if (reduce) return;
-    video.innerHTML =
-      '<source src="' + base + '.webm" type="video/webm">' +
-      '<source src="' + base + '.mp4" type="video/mp4">';
-    video.load();
-    if (video.dataset.visible) video.play().catch(noop);
-  }
-
-  videos.forEach(setup);
-  narrow.addEventListener('change', function () { videos.forEach(setup); });
-  if (reduce) return;
-
-  // preload="none" means nothing downloads until a tile first scrolls into view;
-  var observer = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      var video = entry.target;
-      if (entry.isIntersecting) {
-        video.dataset.visible = '1';
-        video.play().catch(noop);
-      } else {
-        delete video.dataset.visible;
-        video.pause();
-      }
-    });
-  });
-  videos.forEach(function (video) { observer.observe(video); });
-})();
-</script>
 
 <script>
 (function () {
@@ -747,6 +738,33 @@
   window.addEventListener('resize', update);
   reduce.addEventListener('change', update);
   update();
+})();
+</script>
+
+<script>
+(function () {
+  // The bus drives across the lane at an easy pace, waits 7 seconds once it is
+  // off the right edge, then drives across again. It starts the first time the
+  // lane scrolls into view. Reduced motion leaves it parked.
+  var bus = document.getElementById('lane-bus');
+  var lane = bus && bus.parentNode;
+  if (!bus || !bus.animate || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var SPEED = 200;   // pixels per second
+  var PAUSE = 7000;  // milliseconds between trips
+  var MIN_TRIP = 5000;  // so the trip still takes a while on a narrow phone
+  function drive() {
+    var w = bus.getBoundingClientRect().width;
+    var from = -w - 20, to = lane.clientWidth + 20;
+    var trip = bus.animate(
+      [{ transform: 'translateX(' + from + 'px)' }, { transform: 'translateX(' + to + 'px)' }],
+      { duration: Math.max(MIN_TRIP, (to - from) / SPEED * 1000), easing: 'linear', fill: 'forwards' }
+    );
+    trip.onfinish = function () { setTimeout(drive, PAUSE); };
+  }
+  var seen = new IntersectionObserver(function (entries) {
+    if (entries[0].isIntersecting) { seen.disconnect(); drive(); }
+  });
+  seen.observe(lane);
 })();
 </script>
 
