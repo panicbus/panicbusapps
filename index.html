@@ -128,12 +128,29 @@
   .hero h1 .accent { color: var(--amber); }
   .hero .lede { margin: 0; font-size: 20px; line-height: 1.55; color: var(--text-muted); max-width: 620px; }
 
-  /* App rows */
+  /* App cards. Each card is sticky, so the next one scrolls up and stacks over
+     it while the fixed grid stays put behind them. Tops are staggered so the
+     edge of every earlier card peeks out above the stack. The script at the
+     bottom refines each top for cards taller than the viewport and drives
+     the shrink and dim on cards that are being covered. */
+  .stack { --stack-top: 24px; --stack-step: 16px; display: flex; flex-direction: column; gap: 40px; padding-bottom: 8px; }
   .app {
+    --i: 0;
+    --p: 0;
+    position: sticky;
+    top: calc(var(--stack-top) + var(--i) * var(--stack-step));
     display: flex; flex-wrap: wrap; align-items: center; gap: 56px;
-    padding: 64px 0; border-top: 1px solid var(--border);
+    padding: 56px; border-radius: 24px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    box-shadow: 0 -16px 40px rgba(0,0,0,0.45);
+    transform-origin: 50% 0;
+    transform: scale(calc(1 - var(--p) * 0.06));
   }
-  .app:last-of-type { border-bottom: 1px solid var(--border); }
+  /* Dims a card as the next one covers it. */
+  .app::after {
+    content: ""; position: absolute; inset: 0; border-radius: inherit;
+    background: #000; opacity: calc(var(--p) * 0.45); pointer-events: none;
+  }
   .app-info { flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 20px; }
   .app-title { display: flex; align-items: center; gap: 16px; }
   .app-icon {
@@ -239,7 +256,8 @@
     .site-header { gap: 8px; padding-bottom: 20px; }
     .site-nav { display: none; }
     .hero { padding: 64px 0 48px; }
-    .app { gap: 32px; padding: 48px 0; }
+    .stack { --stack-top: 12px; --stack-step: 10px; gap: 24px; }
+    .app { gap: 28px; padding: 24px 20px 28px; border-radius: 20px; }
     .app-name { font-size: 36px; }
     .approach { padding-top: 72px; }
     .sketch-footer { aspect-ratio: 720 / 640; }
@@ -248,6 +266,8 @@
     html { scroll-behavior: auto; }
     .cta:hover .arrow, .btn-amber:hover .arrow { animation: none; }
     .app-shot img { transition: none; }
+    .app { transform: none; }
+    .app::after { display: none; }
   }
 </style>
 <script src="assets/analytics.js" defer></script>
@@ -274,6 +294,8 @@
     </section>
 
     <h2 id="apps" class="visually-hidden">Apps</h2>
+
+    <div class="stack">
 
     <article class="app app--breakthru">
       <div class="app-info">
@@ -352,6 +374,7 @@
       </div>
       <a class="app-shot" href="fridge/" tabindex="-1" aria-hidden="true"><img src="assets/fridge-card.png" alt="" loading="lazy" style="aspect-ratio: 2372 / 1514"></a>
     </article>
+    </div>
 
     <section class="approach" id="approach">
       <h2>How I build</h2>
@@ -421,6 +444,59 @@
     });
   });
   videos.forEach(function (video) { observer.observe(video); });
+})();
+</script>
+
+<script>
+(function () {
+  // Stacking app cards. CSS does the stacking with position: sticky; this
+  // keeps tall cards readable and adds the shrink and dim as each one is covered.
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.stack .app'));
+  if (!cards.length) return;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var tops = [];
+  var ticking = false;
+
+  // A card taller than the viewport would stick before its bottom was seen, so
+  // its top goes negative: it sticks once its bottom reaches the screen edge.
+  function measure() {
+    var styles = getComputedStyle(cards[0].parentNode);
+    var base = parseFloat(styles.getPropertyValue('--stack-top')) || 0;
+    var step = parseFloat(styles.getPropertyValue('--stack-step')) || 0;
+    var vh = window.innerHeight;
+    cards.forEach(function (card, i) {
+      card.style.setProperty('--i', i);
+      var top = base + i * step;
+      var fit = vh - card.offsetHeight - 16;
+      if (fit < top) top = fit;
+      card.style.top = top + 'px';
+      tops[i] = top;
+    });
+    update();
+  }
+
+  function update() {
+    ticking = false;
+    if (reduce.matches) return;
+    for (var i = 0; i < cards.length - 1; i++) {
+      var next = cards[i + 1].getBoundingClientRect().top;
+      var h = cards[i].offsetHeight;
+      var p = 1 - (next - tops[i]) / h;
+      p = p < 0 ? 0 : p > 1 ? 1 : p;
+      cards[i].style.setProperty('--p', p.toFixed(3));
+    }
+  }
+
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, { passive: true });
+  window.addEventListener('resize', measure);
+  window.addEventListener('load', measure);
+  reduce.addEventListener('change', function () {
+    cards.forEach(function (card) { card.style.setProperty('--p', 0); });
+    update();
+  });
+  measure();
 })();
 </script>
 
