@@ -83,6 +83,11 @@
      when a phone's address bar shrinks on scroll. */
   html { scroll-padding-top: var(--head, 72px); }
   .site-head { position: sticky; z-index: 40; top: 0; background: var(--bg); }
+  /* Phones keep the header fixed over the page, with the hero padded below it. */
+  @media (max-width: 760px) {
+    .site-head { position: fixed; left: 0; right: 0; }
+    .hero-stage { padding-top: var(--head, 72px); }
+  }
   .site-header {
     display: flex; flex-wrap: nowrap; align-items: center; justify-content: space-between;
     gap: 24px; padding: 10px 0; border-bottom: 1px solid var(--border);

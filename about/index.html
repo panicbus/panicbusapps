@@ -158,7 +158,10 @@
 
   @media (max-width: 680px) {
     .container { padding: 0 20px; }
-    :root { --head: 57px; }
+    :root { --head: 68px; }
+    /* Phones keep the header fixed over the page, with the body padded below it. */
+    .site-head { position: fixed; left: 0; right: 0; }
+    body { padding-top: var(--head); }
     .brand img { width: 190px; }
     .site-header { padding: 8px 0; flex-wrap: nowrap; }
     .site-nav { gap: 0; }
