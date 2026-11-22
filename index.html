@@ -276,10 +276,8 @@
     position: absolute; left: 0; bottom: 18px; width: 130px; height: auto;
     transform: translateX(-200px); will-change: transform;
   }
-  /* The wheels, bob and streaks are started fresh by the script on every
-     trip, so each pass looks exactly the same. */
-  .lane-bus .wheel { transform-box: fill-box; transform-origin: center; }
-  .lane-bus .streak { transform-box: fill-box; transform-origin: right center; }
+  /* The script draws every frame of the trip (position, wheel turn, bob and
+     streaks) from the time since the trip started, so each pass is identical. */
   /* Reduced motion: the bus stays parked at the right end of the lane. */
   @media (prefers-reduced-motion: reduce) {
     .lane-bus { left: auto; right: max(24px, 6vw); transform: none; }
@@ -856,38 +854,48 @@
   var SPEED = 200;   // pixels per second
   var PAUSE = 7000;  // milliseconds between trips
   var MIN_TRIP = 5000;  // so the trip still takes a while on a narrow phone
-  var wheels = bus.querySelectorAll('.wheel');
   var body = bus.querySelector('.body');
-  var streaks = bus.querySelectorAll('.streak');
-  // Wheel spin, body bob and exhaust streaks start from the same point on
-  // every trip and stop when the bus is off screen.
-  function startParts() {
-    var parts = [];
-    wheels.forEach(function (el) {
-      parts.push(el.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(360deg)' }],
-        { duration: 600, iterations: Infinity, easing: 'linear' }));
+  // Each wheel turns about its own hub; each streak stretches from its right end.
+  var wheels = Array.prototype.map.call(bus.querySelectorAll('.wheel'), function (el) {
+    var hub = el.querySelector('circle');
+    return { el: el, cx: hub.getAttribute('cx'), cy: hub.getAttribute('cy') };
+  });
+  var streaks = Array.prototype.map.call(bus.querySelectorAll('.streak'), function (el) {
+    return { el: el, right: +el.getAttribute('x') + +el.getAttribute('width') };
+  });
+  var SPIN = 0.6;  // wheel degrees per millisecond (one turn in 0.6s)
+
+  function draw(x, ms) {
+    bus.style.transform = 'translateX(' + x.toFixed(2) + 'px)';
+    var turn = (ms * SPIN) % 360;
+    wheels.forEach(function (w) {
+      w.el.setAttribute('transform', 'rotate(' + turn.toFixed(2) + ' ' + w.cx + ' ' + w.cy + ')');
     });
-    parts.push(body.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-2px)' }],
-      { duration: 500, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out' }));
-    streaks.forEach(function (el, i) {
-      parts.push(el.animate(
-        [{ transform: 'scaleX(0.7)', opacity: 0.7 }, { transform: 'scaleX(1.1)', opacity: 1 }],
-        { duration: 400, iterations: Infinity, direction: 'alternate', easing: 'ease-in-out', delay: -150 * i }));
+    // Bob 2px up and down every second.
+    var bob = -1 + Math.cos(ms / 500 * Math.PI);
+    body.setAttribute('transform', 'translate(0 ' + bob.toFixed(2) + ')');
+    streaks.forEach(function (s, i) {
+      var k = 0.5 - 0.5 * Math.cos((ms + 150 * i) / 400 * Math.PI);  // 0 to 1 and back
+      var sx = 0.7 + 0.4 * k;
+      s.el.setAttribute('transform', 'translate(' + s.right + ' 0) scale(' + sx.toFixed(3) + ' 1) translate(' + -s.right + ' 0)');
+      s.el.setAttribute('opacity', (0.7 + 0.3 * k).toFixed(3));
     });
-    return parts;
   }
+
   function drive() {
-    var parts = startParts();
     var w = bus.getBoundingClientRect().width;
     var from = -w - 20, to = lane.clientWidth + 20;
-    var trip = bus.animate(
-      [{ transform: 'translateX(' + from + 'px)' }, { transform: 'translateX(' + to + 'px)' }],
-      { duration: Math.max(MIN_TRIP, (to - from) / SPEED * 1000), easing: 'linear', fill: 'forwards' }
-    );
-    trip.onfinish = function () {
-      parts.forEach(function (a) { a.cancel(); });
-      setTimeout(drive, PAUSE);
-    };
+    var duration = Math.max(MIN_TRIP, (to - from) / SPEED * 1000);
+    var start = null;
+    function frame(now) {
+      if (start === null) start = now;
+      var ms = now - start;
+      var t = Math.min(1, ms / duration);
+      draw(from + (to - from) * t, ms);
+      if (t < 1) requestAnimationFrame(frame);
+      else setTimeout(drive, PAUSE);
+    }
+    requestAnimationFrame(frame);
   }
   var seen = new IntersectionObserver(function (entries) {
     if (entries[0].isIntersecting) { seen.disconnect(); drive(); }
