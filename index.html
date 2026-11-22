@@ -299,8 +299,26 @@
       content: ""; position: absolute; inset: 0; border-radius: inherit;
       background: #000; opacity: calc(var(--p) * 0.45); pointer-events: none;
     }
-    .app { gap: 28px; padding: 24px 20px 28px; border-radius: 20px; }
-    .app-name { font-size: 36px; }
+    /* Phone cards are sized by the script to fit fully below the header: the
+       text keeps its size and the screenshot fills whatever height is left. */
+    .app {
+      flex-direction: column; flex-wrap: nowrap; align-items: stretch;
+      gap: 16px; padding: 20px 20px 20px; border-radius: 20px;
+    }
+    .app-info { flex: none; gap: 12px; }
+    .app-title { gap: 12px; }
+    .app-icon { flex-basis: 44px; width: 44px; height: 44px; border-radius: 12px; }
+    .app-icon img { max-width: 32px; max-height: 32px; }
+    .app--breakthru .app-icon img { width: 44px; height: 44px; max-width: none; max-height: none; }
+    .app-name, .app--tallyup .app-name, .app--fridge .app-name { font-size: 30px; }
+    .app-tagline { font-size: 18px; }
+    .app-desc { font-size: 15px; line-height: 1.5; }
+    .app.compact .app-desc { display: none; }
+    .pills { font-size: 12px; }
+    .cta { min-height: 40px; }
+    .app-shot { flex: 1 1 0; min-height: 0; }
+    .app-shot img { height: 100%; aspect-ratio: auto !important; object-fit: cover; object-position: top center; }
+    .app.no-shot .app-shot { display: none; }
     .approach { padding-top: 72px; }
     .sketch-footer { aspect-ratio: 720 / 640; }
   }
@@ -547,13 +565,14 @@
   var head = document.querySelector('.site-head');
   var stacks = [];
 
-  function makeStack(container, cards, active) {
+  function makeStack(container, cards, active, fit) {
     var tops = [];
     var on = false;
 
     function reset() {
       cards.forEach(function (card) {
-        card.style.minHeight = ''; card.style.marginTop = ''; card.style.marginBottom = '';
+        card.style.minHeight = ''; card.style.height = ''; card.style.marginTop = ''; card.style.marginBottom = '';
+        card.classList.remove('compact', 'no-shot');
         card.style.top = ''; card.style.removeProperty('--p'); card.style.removeProperty('--s');
       });
     }
@@ -566,11 +585,29 @@
       var styles = getComputedStyle(container);
       var base = (parseFloat(styles.getPropertyValue('--stack-top')) || 0) + headH;
       var step = parseFloat(styles.getPropertyValue('--stack-step')) || 0;
-      // Same height for every card, so the finished stack lines up and leaves together.
-      var h = Math.max.apply(null, cards.map(function (card) { return card.offsetHeight; }));
+      var fitToScreen = fit && fit();
+      var h;
+      if (fitToScreen) {
+        // Phones: every card is exactly as tall as the space below the header
+        // (less the peeks of the cards behind it), so each one fits on screen.
+        // The screenshot takes what the text leaves; on short screens the
+        // description, then the screenshot, give way.
+        h = Math.floor(vh - (base + (cards.length - 1) * step) - 16);
+        cards.forEach(function (card) {
+          card.classList.remove('compact', 'no-shot');
+          card.style.height = h + 'px';
+          var info = card.querySelector('.app-info');
+          var room = function () { return h - 40 - 16 - info.offsetHeight; };
+          if (room() < 120) card.classList.add('compact');
+          if (room() < 80) card.classList.add('no-shot');
+        });
+      } else {
+        // Same height for every card, so the finished stack lines up and leaves together.
+        h = Math.max.apply(null, cards.map(function (card) { return card.offsetHeight; }));
+        cards.forEach(function (card) { card.style.minHeight = h + 'px'; });
+      }
       cards.forEach(function (card, i) {
         card.style.setProperty('--i', i);
-        card.style.minHeight = h + 'px';
         var top = Math.min(base + i * step, vh - h - 16);
         card.style.top = top + 'px';
         tops[i] = top;
@@ -604,13 +641,13 @@
     return { measure: measure, update: update };
   }
 
-  function add(containerSel, cardSel, active) {
+  function add(containerSel, cardSel, active, fit) {
     var container = document.querySelector(containerSel);
     if (!container) return;
     var cards = Array.prototype.slice.call(container.querySelectorAll(cardSel));
-    if (cards.length > 1) stacks.push(makeStack(container, cards, active));
+    if (cards.length > 1) stacks.push(makeStack(container, cards, active, fit));
   }
-  add('.stack', '.app', function () { return true; });
+  add('.stack', '.app', function () { return true; }, function () { return window.matchMedia('(max-width: 680px)').matches; });
   add('.principles', '.principle', function () { return window.matchMedia('(max-width: 680px)').matches; });
   if (!stacks.length) return;
 
