@@ -395,12 +395,16 @@
   }
   .contact::backdrop { background: rgba(0,0,0,0.6); }
   .contact form { display: flex; flex-direction: column; gap: 16px; padding: 28px; }
-  .contact .head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .contact .head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
   .contact h2 { margin: 0; font-family: 'Sora', sans-serif; font-size: 24px; letter-spacing: -0.02em; }
   .contact .close {
     width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.22);
-    background: none; color: var(--text); font-size: 20px; line-height: 1; cursor: pointer;
+    flex: none; display: flex; align-items: center; justify-content: center; padding: 0;
+    background: none; color: var(--text); cursor: pointer;
   }
+  .contact .close svg { display: block; }
+  .contact .req { color: #F0625B; }
+  .contact textarea::placeholder { color: #6E6E73; }
   .contact .close:hover { border-color: var(--amber); color: var(--amber); }
   .contact label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 500; color: var(--text-muted); }
   .contact input, .contact textarea {
@@ -1193,13 +1197,13 @@
 <dialog class="contact" id="contact" aria-labelledby="contact-title">
   <form method="dialog" novalidate>
     <div class="head">
-      <h2 id="contact-title">Tell me your idea.</h2>
-      <button type="button" class="close" data-close aria-label="Close">&times;</button>
+      <h2 id="contact-title">Tell me what you have in mind. Let's collaborate!</h2>
+      <button type="button" class="close" data-close aria-label="Close"><svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true"><path d="M2 2 L12 12 M12 2 L2 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
     </div>
     <div class="fields" style="display: contents">
-      <label>Name<input name="name" autocomplete="name" required maxlength="120"></label>
-      <label>Email<input name="email" type="email" autocomplete="email" required maxlength="200"></label>
-      <label>What are you building?<textarea name="message" required maxlength="5000"></textarea></label>
+      <label><span>Name <span class="req" aria-hidden="true">*</span></span><input name="name" autocomplete="name" autofocus required maxlength="120"></label>
+      <label><span>Email <span class="req" aria-hidden="true">*</span></span><input name="email" type="email" autocomplete="email" required maxlength="200"></label>
+      <label>I respond in under a day.<textarea name="message" required maxlength="5000" placeholder="What are you building?"></textarea></label>
       <label class="trap" aria-hidden="true">Leave this empty<input name="company" tabindex="-1" autocomplete="off"></label>
       <button type="submit" class="hire-btn send">Send</button>
     </div>
