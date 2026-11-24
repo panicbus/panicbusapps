@@ -112,7 +112,19 @@
   }
   .phone-layer, .phone-face { position: absolute; inset: 0; border-radius: 34px; }
   .phone-layer { border: 1.5px solid var(--label); opacity: 0; }
-  .phone-face { border: 2px solid var(--label); }
+  /* The face carries the page's grid, lined up with it, so the grid still
+     reads through the glass once the phone turns in 3D (some browsers hide
+     the page behind a turned layer). The script keeps it lined up. */
+  .phone-face {
+    border: 2px solid var(--label);
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 200px 200px, 200px 200px, 40px 40px, 40px 40px;
+    background-position: var(--gx, 0) var(--gy, 0);
+  }
   .phone-notch {
     position: absolute; top: 10px; left: 50%; width: 22%; height: 6px; border-radius: 3px;
     background: var(--label); transform: translateX(-50%);
@@ -829,10 +841,31 @@
   document.body.appendChild(nav);
 
   function go(y) { window.scrollTo({ top: y, behavior: reduce.matches ? 'auto' : 'smooth' }); }
+  // The down arrow glides slowly to the first card, so the phone has time to
+  // draw and turn on the way. Any wheel, touch or key from the visitor stops it.
+  var glide = null;
+  function stopGlide() { if (glide) { cancelAnimationFrame(glide); glide = null; } }
+  ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function (t) {
+    window.addEventListener(t, stopGlide, { passive: true });
+  });
+  function slowGo(y) {
+    if (reduce.matches) { go(y); return; }
+    stopGlide();
+    var from = window.scrollY, dist = y - from, t0 = null;
+    var dur = Math.min(4200, Math.max(1600, Math.abs(dist) * 2.6));
+    var step = function (now) {
+      if (t0 === null) t0 = now;
+      var t = Math.min(1, (now - t0) / dur);
+      var e = t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      window.scrollTo({ top: from + dist * e, behavior: 'instant' });
+      glide = t < 1 ? requestAnimationFrame(step) : null;
+    };
+    glide = requestAnimationFrame(step);
+  }
   if (cue) cue.addEventListener('click', function (e) {
     if (!cards.length) return;
     e.preventDefault();
-    go(+cards[0].dataset.at || 0);
+    slowGo(+cards[0].dataset.at || 0);
   });
 
   var ticking = false;
@@ -904,8 +937,20 @@
     });
   }
 
+  // Line the face's grid up with the page grid (centered, from the top of
+  // the screen), using the phone's untransformed place in the layout.
+  function alignGrid() {
+    var parent = phone.offsetParent;
+    if (!parent) return;
+    var pr = parent.getBoundingClientRect();
+    var left = pr.left + phone.offsetLeft + 2, top = pr.top + phone.offsetTop + 2;
+    face.style.setProperty('--gx', (document.documentElement.clientWidth / 2 - 100 - left) + 'px');
+    face.style.setProperty('--gy', (-top) + 'px');
+  }
+
   function update() {
     ticking = false;
+    alignGrid();
     if (reduce.matches) { render(1, 0); return; }  // finished drawing, held flat
     if (narrow.matches) {
       // Phones: the sketch starts sparse and draws a little on its own after
