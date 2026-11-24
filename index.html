@@ -1203,7 +1203,7 @@
     <div class="fields" style="display: contents">
       <label><span>Name <span class="req" aria-hidden="true">*</span></span><input name="name" autocomplete="name" autofocus required maxlength="120"></label>
       <label><span>Email <span class="req" aria-hidden="true">*</span></span><input name="email" type="email" autocomplete="email" required maxlength="200"></label>
-      <label>I respond in under a day.<textarea name="message" required maxlength="5000" placeholder="What are you building?"></textarea></label>
+      <label>What are you building?<textarea name="message" required maxlength="5000" placeholder="I respond in under a day."></textarea></label>
       <label class="trap" aria-hidden="true">Leave this empty<input name="company" tabindex="-1" autocomplete="off"></label>
       <button type="submit" class="hire-btn send">Send</button>
     </div>
@@ -1220,11 +1220,12 @@
   if (!dlg || !dlg.showModal) return;
   var form = dlg.querySelector('form'), status = dlg.querySelector('.status'), send = dlg.querySelector('.send');
   var fields = dlg.querySelector('.fields');
+  var title = dlg.querySelector('#contact-title'), titleText = title.textContent;
   var fallback = 'Something went wrong. You can email me at <a href="mailto:nicocrisafulli@gmail.com">nicocrisafulli@gmail.com</a>.';
   document.querySelectorAll('[data-contact]').forEach(function (b) {
     b.addEventListener('click', function (e) {
       e.preventDefault();
-      fields.style.display = 'contents'; status.textContent = '';
+      fields.style.display = 'contents'; status.textContent = ''; title.textContent = titleText;
       dlg.showModal();
     });
   });
@@ -1239,7 +1240,7 @@
       .then(function (res) {
         if (!res.ok) throw new Error('send failed');
         form.reset(); fields.style.display = 'none';
-        status.textContent = "Thanks. I'll get back to you soon.";
+        status.textContent = ''; title.textContent = 'Thanks! Looking forward to chatting. 👋🏼';
       })
       .catch(function () { status.innerHTML = fallback; })
       .then(function () { send.disabled = false; });
