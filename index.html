@@ -931,7 +931,7 @@
       e.preventDefault();
       stopGlide();
       var y = hireSec.getBoundingClientRect().top + window.scrollY - (head ? head.offsetHeight : 0);
-      window.scrollTo({ top: Math.round(y) - 50, behavior: 'instant' });
+      window.scrollTo({ top: Math.round(y) + 50, behavior: 'instant' });
     });
   });
 
