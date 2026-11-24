@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Panicbus Studios</title>
-<meta name="description" content="Small apps that do one job well. Custom applications for the Mac and the web, made with care.">
+<title>Nico Crisafulli · Frontend and AI engineer · Panicbus Studios</title>
+<meta name="description" content="Frontend and AI engineer with 13 years in high-traffic ecommerce. Available for remote contract and consulting work.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://panicbusapps.com/">
-<meta property="og:title" content="Panicbus Studios">
-<meta property="og:description" content="Small apps that do one job well. Custom applications for the Mac and the web, made with care.">
+<meta property="og:title" content="Nico Crisafulli · Frontend and AI engineer · Panicbus Studios">
+<meta property="og:description" content="Frontend and AI engineer with 13 years in high-traffic ecommerce. Available for remote contract and consulting work.">
 <meta property="og:image" content="https://panicbusapps.com/assets/studios/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Panicbus Studios">
-<meta name="twitter:description" content="Small apps that do one job well. Custom applications for the Mac and the web, made with care.">
+<meta name="twitter:title" content="Nico Crisafulli · Frontend and AI engineer · Panicbus Studios">
+<meta name="twitter:description" content="Frontend and AI engineer with 13 years in high-traffic ecommerce. Available for remote contract and consulting work.">
 <meta name="twitter:image" content="https://panicbusapps.com/assets/studios/og-image.png">
 <link rel="icon" href="assets/studios/panicbus-icon.svg" type="image/svg+xml">
 <link rel="alternate icon" href="favicon.ico">
@@ -376,6 +376,61 @@
   @media (max-width: 760px) { .scroll-cue, .page-dots { display: none; } }
   @media (max-width: 1320px) { .page-dots { right: 8px; } }
 
+
+  /* Hero buttons: shorter than the app cards' buttons. */
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .hero-btn {
+    display: inline-flex; align-items: center; min-height: 36px; padding: 0 16px; border-radius: 8px;
+    font-size: 14px; font-weight: 500; text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.22); color: var(--text);
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+  }
+  .hero-btn:hover { border-color: var(--amber); color: var(--amber); }
+  .hero-btn.primary { background: var(--amber); border-color: var(--amber); color: var(--bg); }
+  .hero-btn.primary:hover { background: #FFC65C; border-color: #FFC65C; color: var(--bg); }
+  .app-stack { margin: 0; font-size: 13px; color: var(--label); letter-spacing: 0.01em; }
+  .offer p { margin: -8px 0 0; font-size: 15px; line-height: 1.55; color: var(--text-muted); }
+
+  /* Work with me: the button that opens the contact form. */
+  .hire-btn {
+    align-self: center; display: inline-flex; align-items: center; min-height: 44px; padding: 0 22px;
+    border: 0; border-radius: 10px; background: var(--amber); color: var(--bg);
+    font: 500 15px 'DM Sans', system-ui, sans-serif; cursor: pointer;
+  }
+  .hire-btn:hover { background: #FFC65C; }
+
+  /* Contact form, in a dialog. */
+  .contact {
+    width: min(520px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); padding: 0;
+    border: 1px solid var(--border); border-radius: 20px; background: var(--bg-card); color: var(--text);
+  }
+  .contact::backdrop { background: rgba(0,0,0,0.6); }
+  .contact form { display: flex; flex-direction: column; gap: 16px; padding: 28px; }
+  .contact .head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .contact h2 { margin: 0; font-family: 'Sora', sans-serif; font-size: 24px; letter-spacing: -0.02em; }
+  .contact .close {
+    width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.22);
+    background: none; color: var(--text); font-size: 20px; line-height: 1; cursor: pointer;
+  }
+  .contact .close:hover { border-color: var(--amber); color: var(--amber); }
+  .contact label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 500; color: var(--text-muted); }
+  .contact input, .contact textarea {
+    width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.14);
+    background: var(--bg); color: var(--text); font: 400 16px 'DM Sans', system-ui, sans-serif;
+  }
+  .contact textarea { min-height: 140px; resize: vertical; }
+  .contact input:focus, .contact textarea:focus { outline: 2px solid var(--amber); outline-offset: 1px; border-color: transparent; }
+  .contact .trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .contact .send { align-self: flex-start; }
+  .contact .send:disabled { opacity: 0.6; cursor: default; }
+  .contact .status { margin: 0; font-size: 15px; line-height: 1.5; color: var(--text-muted); }
+  .contact .status a { color: var(--amber); }
+  @media (max-width: 680px) {
+    .site-nav .hire-link { display: none; }
+    .hero .eyebrow .sep { display: none; }
+    .hero .eyebrow .where { display: block; }
+  }
+
   a:focus-visible, button:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
 
   @media (max-width: 680px) {
@@ -446,6 +501,7 @@
   <header class="site-header">
     <a class="brand" href="./"><img src="assets/studios/panicbus-logo.svg" alt="Panicbus Studios" width="400" height="108"></a>
     <nav class="site-nav" aria-label="Main">
+      <a class="hire-link" href="#hire">Work with me</a>
       <a class="about" href="about/">About</a>
     </nav>
   </header>
@@ -458,9 +514,13 @@
       <div class="hero-stage">
         <section class="hero">
           <div class="hero-copy">
-            <p class="eyebrow">Independent software studio · Alameda, CA</p>
+            <p class="eyebrow">Frontend and AI engineering<span class="sep"> · </span><span class="where">Alameda, CA</span></p>
             <h1>Custom applications, made with <span class="accent">care.</span></h1>
-            <p class="lede">Made for the Mac and the web, designed, built and supported by one person.</p>
+            <p class="lede">I'm Nico. I've spent 13 years building for high-traffic ecommerce, and I design, build and ship apps like the ones below. Now taking remote contract work.</p>
+            <div class="hero-actions">
+              <a class="hero-btn primary" href="#hire">Work with me</a>
+              <a class="hero-btn" href="#apps">See the apps</a>
+            </div>
           </div>
           <div class="phone" id="phone" aria-hidden="true">
             <span class="phone-layer" data-k="7"></span><span class="phone-layer" data-k="6"></span><span class="phone-layer" data-k="5"></span><span class="phone-layer" data-k="4"></span><span class="phone-layer" data-k="3"></span><span class="phone-layer" data-k="2"></span><span class="phone-layer" data-k="1"></span>
@@ -517,6 +577,7 @@
         <p class="app-tagline">Drop your thoughts. See what breaks thru.</p>
         <p class="app-desc">An AI journal that turns what is on your mind into what is next. Write it all in one go; it sorts your thoughts, says what each one means, and offers a next step.</p>
         <div class="pills"><span class="pill-price">Free</span><span class="pill-tag">Web app</span><span class="pill-tag">Mobile friendly</span></div>
+        <p class="app-stack">React · TypeScript · Convex · Claude API</p>
         <a class="cta" href="breakthru/">View Breakthru <span class="arrow" aria-hidden="true">&rarr;</span></a>
       </div>
       <a class="app-shot" href="breakthru/" tabindex="-1" aria-hidden="true"><img src="assets/breakthru-card.png" alt="" loading="lazy" style="aspect-ratio: 2000 / 1275"></a>
@@ -531,6 +592,7 @@
         <p class="app-tagline">Your news. Your pace. All caught up.</p>
         <p class="app-desc">Turn any topic into a channel, stack up the stories that matter, and clear them out at your own speed, right in your browser.</p>
         <div class="pills"><span class="pill-price">Free</span><span class="pill-tag">Web app</span><span class="pill-tag">macOS app</span></div>
+        <p class="app-stack">React · TypeScript · Express · PostgreSQL</p>
         <a class="cta" href="catchup/">View Catch Up <span class="arrow" aria-hidden="true">&rarr;</span></a>
       </div>
       <a class="app-shot" href="catchup/" tabindex="-1" aria-hidden="true"><img src="assets/catchup-card.png" alt="" loading="lazy"></a>
@@ -545,6 +607,7 @@
         <p class="app-tagline">The punch card, without the paper.</p>
         <p class="app-desc">Reward your regulars without the stamps, the lost cards, or the hole punch. Customers check in with just a phone number, no app to download.</p>
         <div class="pills"><span class="pill-price">Free during pilot</span><span class="pill-tag">Web app</span></div>
+        <p class="app-stack">React · TypeScript · Fastify · Supabase</p>
         <a class="cta" href="tallyup/">View TallyUp <span class="arrow" aria-hidden="true">&rarr;</span></a>
       </div>
       <a class="app-shot" href="tallyup/" tabindex="-1" aria-hidden="true"><img src="assets/tallyup-card.png" alt="" loading="lazy" style="aspect-ratio: 649 / 414"></a>
@@ -559,6 +622,7 @@
         <p class="app-tagline">Your budget. Your Mac. Your data.</p>
         <p class="app-desc">A personal budget tracker with no cloud, no ads and no subscription. Import from your bank, track spending, see trends. Everything stays on your machine.</p>
         <div class="pills"><span class="pill-price">$19 one-time</span><span class="pill-tag">macOS app</span></div>
+        <p class="app-stack">Electron · React · TypeScript · SQLite</p>
         <a class="cta" href="spend/">View Spend <span class="arrow" aria-hidden="true">&rarr;</span></a>
       </div>
       <a class="app-shot" href="spend/" tabindex="-1" aria-hidden="true"><img src="assets/spend-card.png" alt="" loading="lazy"></a>
@@ -590,16 +654,16 @@
     <section class="approach" id="approach">
       <h2>How I build</h2>
       <div class="principles">
-        <div class="principle"><span class="num">01</span><h3>A strategy for every scenario</h3><p>Each project solves a problem that I personally encountered, engineered to perform.</p></div>
+        <div class="principle"><span class="num">01</span><h3>Shipped and supported</h3><p>Every app here is live and fully maintained.</p></div>
         <div class="principle"><span class="num">02</span><h3>Built-in privacy</h3><p>Systems rooted in data minimalism. Nothing is sold, everything yours stays yours.</p></div>
-        <div class="principle"><span class="num">03</span><h3>Anti-subscription</h3><p>Free, or a fair one-off price. Updates always included.</p></div>
+        <div class="principle"><span class="num">03</span><h3>Eye for design</h3><p>Spacing, type and motion get the same care as the code underneath.</p></div>
       </div>
     </section>
 
     <section class="hire" id="hire">
       <div class="hire-stage">
       <h2>Work with me</h2>
-      <p class="hire-lede">Available for remote contract and consulting work. <a href="mailto:nicocrisafulli@gmail.com?subject=A%20project%20for%20Panicbus%20Studios">Message me.</a></p>
+      <p class="hire-lede">Available for remote contract and consulting work.</p>
       <div class="offers">
         <div class="offer">
           <svg class="offer-art art-ui" viewBox="0 0 56 56" aria-hidden="true">
@@ -610,6 +674,7 @@
             <path class="line row r3" d="M12 40 H30"/>
           </svg>
           <h3>Frontend engineering</h3>
+          <p>React and TypeScript, component and design systems, SDKs, accessibility and performance. Check, check and check.</p>
         </div>
         <div class="offer">
           <svg class="offer-art art-flow" viewBox="0 0 56 56" aria-hidden="true">
@@ -620,6 +685,7 @@
             <circle class="pulse" r="3" fill="var(--amber)"/>
           </svg>
           <h3>AI workflow automation</h3>
+          <p>Connecting Claude to the tools you already use. MCPs and legacy connectors. Agentic development.</p>
         </div>
         <div class="offer">
           <svg class="offer-art art-app" viewBox="0 0 56 56" aria-hidden="true">
@@ -630,8 +696,10 @@
             <g class="check"><circle class="line accent" cx="44" cy="40" r="7" fill="var(--bg-card)"/><path class="line accent" d="M40.5 40 l2.5 2.5 L47.5 37.5"/></g>
           </svg>
           <h3>Your application, start to finish</h3>
+          <p>Design, build, launch and support, on the web or on your Mac.</p>
         </div>
       </div>
+      <button type="button" class="hire-btn" data-contact>Tell me your idea</button>
       </div>
     </section>
 
@@ -639,8 +707,8 @@
       <img src="assets/studios/nico-photo.jpg" alt="Nico Crisafulli" width="96" height="96" loading="lazy">
       <div class="copy">
         <p class="hi">Hi, I'm Nico.</p>
-        <p>Senior frontend engineer with 13 years in high-traffic ecommerce. Panicbus Studios is where I build my own things.</p>
-        <a class="read-more" href="about/">Read more&hellip;</a>
+        <p>Frontend and AI engineer with 13 years shipping for Men's Wearhouse, Jos. A. Bank, TJ Maxx and more. Panicbus Studios is where I build my own apps.</p>
+        <a class="read-more" href="about/">My background and résumé</a>
       </div>
     </section>
   </main>
@@ -1125,6 +1193,58 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll);
   frame();
+})();
+</script>
+
+<dialog class="contact" id="contact" aria-labelledby="contact-title">
+  <form method="dialog" novalidate>
+    <div class="head">
+      <h2 id="contact-title">Tell me your idea.</h2>
+      <button type="button" class="close" data-close aria-label="Close">&times;</button>
+    </div>
+    <div class="fields" style="display: contents">
+      <label>Name<input name="name" autocomplete="name" required maxlength="120"></label>
+      <label>Email<input name="email" type="email" autocomplete="email" required maxlength="200"></label>
+      <label>What are you building?<textarea name="message" required maxlength="5000"></textarea></label>
+      <label class="trap" aria-hidden="true">Leave this empty<input name="company" tabindex="-1" autocomplete="off"></label>
+      <button type="submit" class="hire-btn send">Send</button>
+    </div>
+    <p class="status" role="status" aria-live="polite"></p>
+  </form>
+</dialog>
+
+<script>
+(function () {
+  // Contact form: opens from "Tell me your idea" and sends through /api/contact
+  // (netlify/functions/contact.mjs), which emails Nico through Resend. If that
+  // fails, the person gets the email address instead.
+  var dlg = document.getElementById('contact');
+  if (!dlg || !dlg.showModal) return;
+  var form = dlg.querySelector('form'), status = dlg.querySelector('.status'), send = dlg.querySelector('.send');
+  var fields = dlg.querySelector('.fields');
+  var fallback = 'Something went wrong. You can email me at <a href="mailto:nicocrisafulli@gmail.com">nicocrisafulli@gmail.com</a>.';
+  document.querySelectorAll('[data-contact]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      fields.style.display = 'contents'; status.textContent = '';
+      dlg.showModal();
+    });
+  });
+  dlg.querySelector('[data-close]').addEventListener('click', function () { dlg.close(); });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!form.reportValidity()) return;
+    var data = Object.fromEntries(new FormData(form));
+    send.disabled = true; status.textContent = 'Sending…';
+    fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+      .then(function (res) {
+        if (!res.ok) throw new Error('send failed');
+        form.reset(); fields.style.display = 'none';
+        status.textContent = "Thanks. I'll get back to you soon.";
+      })
+      .catch(function () { status.innerHTML = fallback; })
+      .then(function () { send.disabled = false; });
+  });
 })();
 </script>
 </body>
