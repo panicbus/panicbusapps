@@ -139,7 +139,7 @@
     .phone { align-self: center; width: min(200px, 52vw); margin-right: 0; }
     .phone-layer, .phone-face { border-radius: 28px; }
   }
-  .hero h1 .accent { color: var(--text); }
+  .hero h1 .accent { color: inherit; }
   .hero .lede { margin: 0; font-size: 20px; line-height: 1.55; color: var(--text-muted); max-width: 620px; }
 
   /* App cards. Each card is sticky, so the next one scrolls up and stacks over
@@ -187,14 +187,17 @@
     0%, 100% { transform: translateX(0); animation-timing-function: ease-out; }
     50% { transform: translateX(6px); animation-timing-function: ease-in; }
   }
-  .cta:hover .arrow { animation: arrow-bounce 0.7s infinite; }
+  .cta:hover .arrow, .app:hover .cta .arrow { animation: arrow-bounce 0.7s infinite; }
+  /* The whole app card opens the app's page: the button's link stretches over the card. */
+  .app .cta::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; }
+  .app { cursor: pointer; }
   .app-shot { flex: 1.6 1 480px; min-width: 0; display: block; line-height: 0; }
   .app-shot img {
     width: 100%; height: auto; aspect-ratio: 2394 / 1526; object-fit: cover;
     border-radius: 16px; border: 1px solid var(--border);
     transition: transform 0.3s ease;
   }
-  .app-shot:hover img { transform: translateY(-4px); }
+  .app:hover .app-shot img { transform: translateY(-4px); }
 
   .app--breakthru .app-icon { background: #1f3f63; overflow: hidden; }
   .app--breakthru .app-icon img { width: 56px; height: 56px; }
@@ -248,7 +251,8 @@
   .offer-art { width: 84px; height: 84px; overflow: visible; align-self: center; }
   .offer-art .line { fill: none; stroke: var(--label); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
   .offer-art .accent { stroke: var(--amber); }
-  .hire .btn-amber { align-self: center; }
+  .hire .hire-lede a { color: var(--amber); text-decoration: underline; text-underline-offset: 3px; }
+  .hire .hire-lede a:hover { color: #FFC65C; }
 
   /* Frontend: the page's lines draw in, one after another. */
   .art-ui .row { stroke-dasharray: 32; stroke-dashoffset: 32; animation: row-in 6s ease-in-out infinite; }
@@ -290,15 +294,9 @@
   .intro-card img { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; }
   .intro-card .copy { flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
   .intro-card .hi { margin: 0; font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 600; }
-  .intro-card .copy p:last-child { margin: 0; font-size: 16px; line-height: 1.55; color: var(--text-muted); }
-  .btn-amber {
-    display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 22px;
-    border-radius: 10px; background: var(--amber); color: var(--bg); text-decoration: none;
-    font-weight: 700; font-size: 15px;
-  }
-  .btn-amber:hover { background: #FFC65C; }
-  .btn-amber:hover .arrow { animation: arrow-bounce 0.7s infinite; }
-  .btn-amber .arrow { display: inline-block; }
+  .intro-card .copy p:not(.hi) { margin: 0; font-size: 16px; line-height: 1.55; color: var(--text-muted); }
+  .intro-card .read-more { align-self: flex-start; margin-top: 4px; font-size: 15px; font-weight: 600; color: var(--amber); text-decoration: none; }
+  .intro-card .read-more:hover { color: #FFC65C; text-decoration: underline; text-underline-offset: 3px; }
 
   /* Footer */
   .site-footer {
@@ -417,7 +415,7 @@
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    .cta:hover .arrow, .btn-amber:hover .arrow, .scroll-cue svg { animation: none; }
+    .cta:hover .arrow, .app:hover .cta .arrow, .scroll-cue svg { animation: none; }
     .app-shot img { transition: none; }
     .app, .principle { transform: none; }
     .app::after, .principle::after { display: none; }
@@ -590,7 +588,7 @@
     <section class="hire" id="hire">
       <div class="hire-stage">
       <h2>Work with me</h2>
-      <p class="hire-lede">I'm taking on remote contract and consulting work.</p>
+      <p class="hire-lede">Available for remote contract and consulting work. <a href="mailto:nicocrisafulli@gmail.com?subject=A%20project%20for%20Panicbus%20Studios">Message me.</a></p>
       <div class="offers">
         <div class="offer">
           <svg class="offer-art art-ui" viewBox="0 0 56 56" aria-hidden="true">
@@ -623,7 +621,6 @@
           <h3>Your application, start to finish</h3>
         </div>
       </div>
-      <a class="btn-amber" href="mailto:nicocrisafulli@gmail.com?subject=A%20project%20for%20Panicbus%20Studios">Tell me about your project <span class="arrow" aria-hidden="true">&rarr;</span></a>
       </div>
     </section>
 
@@ -632,8 +629,8 @@
       <div class="copy">
         <p class="hi">Hi, I'm Nico.</p>
         <p>Senior frontend engineer with 13 years in high-traffic ecommerce. Panicbus Studios is where I build my own things.</p>
+        <a class="read-more" href="about/">Read more&hellip;</a>
       </div>
-      <a class="btn-amber" href="about/">About me + resume <span class="arrow" aria-hidden="true">&rarr;</span></a>
     </section>
   </main>
 
@@ -922,6 +919,11 @@
       var q = range(window.scrollY, 0, Math.max(240, top + phone.offsetHeight * .4 - headH));
       var d = Math.max(intro, .12 + .88 * range(q, 0, .55));
       render(d, range(q, .5, 1));
+      // The headline warms to amber as it scrolls up, all amber by the time
+      // its last line slips under the header.
+      if (h1Bottom === null) h1Bottom = h1.getBoundingClientRect().bottom + window.scrollY;
+      var w = ease(range(window.scrollY, 0, Math.max(120, h1Bottom - headH - 8)));
+      h1.style.color = 'color-mix(in srgb, var(--amber) ' + (w * 100).toFixed(1) + '%, var(--text))';
       return;
     }
     // The stage sticks just under the header, so progress runs from the page
@@ -935,9 +937,10 @@
   window.addEventListener('scroll', function () {
     if (!ticking) { ticking = true; requestAnimationFrame(update); }
   }, { passive: true });
-  window.addEventListener('resize', function () { phoneTop = null; update(); });
+  window.addEventListener('resize', function () { phoneTop = null; h1Bottom = null; if (!narrow.matches) h1.style.color = ''; update(); });
   reduce.addEventListener('change', update);
   var phoneTop = null;  // measured once, since the turn itself moves the box a little
+  var h1 = document.querySelector('.hero h1'), h1Bottom = null;
 
   // Phones: on load the sketch draws from sparse to about half done by itself.
   var intro = 0;

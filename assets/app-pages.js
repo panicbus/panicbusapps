@@ -12,92 +12,87 @@
     return pos === 'sticky' || pos === 'fixed' ? nav.offsetHeight : 0;
   }
 
-  // Sections stack. Every top-level block after the header sticks; a block
-  // taller than the screen sticks by its bottom edge, so it scrolls normally
-  // until its end is on screen, then holds while the next one slides over it.
-  var skip = { SCRIPT: 1, NAV: 1, STYLE: 1, LINK: 1, NOSCRIPT: 1, TEMPLATE: 1 };
-  var blocks = Array.prototype.filter.call(document.body.children, function (el) { return !skip[el.tagName]; });
-  var bodyBg = getComputedStyle(document.body).backgroundColor;
-  blocks.forEach(function (el, i) {
-    el.classList.add('stack-block');
-    el.style.zIndex = i + 1;
-    var bg = getComputedStyle(el).backgroundColor;
-    if (bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent') el.style.backgroundColor = bodyBg;
-  });
-
-  // Phones: feature cards stack like the home page's How I build cards.
-  var cardStacks = Array.prototype.map.call(document.querySelectorAll('.card-stack'), function (grid) {
+  // Phones: feature cards marked .card-stack stack like the home page's How I
+  // build cards, each dimming a little as the next one covers it.
+  var cardStacks = phone.matches ? Array.prototype.map.call(document.querySelectorAll('.card-stack'), function (grid) {
     return Array.prototype.slice.call(grid.children);
-  });
-
-  function layout() {
-    var top = navH(), vh = window.innerHeight;
-    blocks.forEach(function (el) {
-      el.style.top = Math.min(top, vh - el.offsetHeight) + 'px';
-    });
+  }) : [];
+  function placeStacks() {
+    var top = navH();
     cardStacks.forEach(function (cards) {
-      cards.forEach(function (c, i) { c.style.top = phone.matches ? (top + 12 + i * 10) + 'px' : ''; });
+      cards.forEach(function (c, i) { c.style.top = (top + 12 + i * 10) + 'px'; });
     });
-    frame();
   }
-
-  // The covered block (or card) dims as the next one comes up over it.
-  function cover(list, stuckAt) {
-    for (var i = 0; i < list.length; i++) {
-      var next = list[i + 1];
-      var p = 0;
-      if (next && !reduce) {
-        // From the moment the next one reaches this one's bottom edge until it sticks.
-        var start = Math.min(window.innerHeight, list[i].getBoundingClientRect().bottom), end = stuckAt(next, i + 1);
-        p = clamp((start - next.getBoundingClientRect().top) / Math.max(1, start - end));
-      }
-      list[i].style.setProperty('--p', p.toFixed(3));
-    }
-  }
-
-  // Cards that deal out from a stack in the middle as their row scrolls in
-  // (gathering again on the way back up); on narrow screens each card slides
-  // in once from alternating sides.
-  var fans = Array.prototype.map.call(document.querySelectorAll('.fan-row'), function (row) {
-    var cards = Array.prototype.slice.call(row.children);
-    var section = row.closest('section');
-    if (section) section.classList.add('fan-section');
-    return { row: row, cards: cards };
-  });
-  if (!reduce && narrow.matches) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        e.target.style.opacity = 1; e.target.style.transform = 'none';
-        io.unobserve(e.target);
+  function coverStacks() {
+    if (reduce) return;
+    var top = navH();
+    cardStacks.forEach(function (cards) {
+      cards.forEach(function (c, i) {
+        var next = cards[i + 1], p = 0;
+        if (next) {
+          var start = Math.min(window.innerHeight, c.getBoundingClientRect().bottom), end = top + 12 + (i + 1) * 10;
+          p = clamp((start - next.getBoundingClientRect().top) / Math.max(1, start - end));
+        }
+        c.style.setProperty('--p', p.toFixed(3));
       });
-    }, { threshold: 0.25 });
-    fans.forEach(function (f) {
-      f.cards.forEach(function (c, i) {
-        c.style.opacity = 0; c.style.transform = 'translateX(' + (i % 2 ? 60 : -60) + 'px)';
-        c.style.transition = 'opacity .7s ease, transform .9s cubic-bezier(.2,.8,.2,1)';
+    });
+  }
+
+  // Smaller cards move in as they scroll into view. A grid's data-anim picks
+  // the move: rise, pop, tilt or slide play once; fan deals each row out from
+  // its middle card as you scroll (and gathers it again on the way back up).
+  // On narrow screens a fan becomes a slide. Stacked phone cards skip this.
+  var fans = [];
+  var io = 'IntersectionObserver' in window && new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    });
+  }, { threshold: 0.2, rootMargin: '0px 0px -8% 0px' });
+
+  if (!reduce && io) {
+    document.documentElement.classList.add('card-motion');
+    Array.prototype.forEach.call(document.querySelectorAll('[data-anim]'), function (grid) {
+      if (phone.matches && grid.classList.contains('card-stack')) return;
+      var kind = grid.getAttribute('data-anim');
+      if (kind === 'fan' && narrow.matches) kind = 'slide';
+      var cards = Array.prototype.slice.call(grid.children);
+      var section = grid.closest('section') || grid.parentNode;
+      if (kind === 'fan' || kind === 'slide') section.classList.add('anim-clip');
+      if (kind === 'fan') { grid.classList.add('anim-fan'); fans.push(cards); return; }
+      grid.classList.add('anim', 'anim-' + kind);
+      // Stagger by position within the row, so each row plays left to right.
+      var rowTop = null, col = 0;
+      cards.forEach(function (c) {
+        if (c.offsetTop !== rowTop) { rowTop = c.offsetTop; col = 0; }
+        c.style.transitionDelay = (col++ * 0.12) + 's';
         io.observe(c);
       });
     });
-    fans = [];
   }
 
   function frame() {
     ticking = false;
-    var top = navH(), vh = window.innerHeight;
-    cover(blocks, function (el) { return Math.min(top, vh - el.offsetHeight); });
-    if (phone.matches) cardStacks.forEach(function (cards) {
-      cover(cards, function (el, i) { return top + 12 + i * 10; });
-    });
-    if (reduce) return;
-    fans.forEach(function (f) {
-      var t = ease(clamp((vh - f.row.getBoundingClientRect().top) / (vh * 0.6)));
-      var midIndex = Math.floor(f.cards.length / 2), mid = f.cards[midIndex].offsetLeft, k = 1 - t;
-      f.cards.forEach(function (c, i) {
-        var d = i - midIndex;
-        c.style.transform = 'translate(' + (mid - c.offsetLeft) * k + 'px,' + (40 + (d ? 18 : 0)) * k + 'px) rotate(' + d * 10 * k + 'deg)';
-        c.style.zIndex = d ? 2 : 3;
-        c.style.opacity = 0.35 + 0.65 * clamp(t * 1.6);
+    coverStacks();
+    var vh = window.innerHeight;
+    fans.forEach(function (cards) {
+      // Group into rows; each row deals out from its middle card.
+      var rows = [];
+      cards.forEach(function (c) {
+        var r = rows[rows.length - 1];
+        if (!r || r.top !== c.offsetTop) rows.push(r = { top: c.offsetTop, cards: [] });
+        r.cards.push(c);
+      });
+      rows.forEach(function (r) {
+        var t = ease(clamp((vh - r.cards[0].parentNode.getBoundingClientRect().top - (r.top - r.cards[0].parentNode.firstElementChild.offsetTop)) / (vh * 0.6)));
+        var m = Math.floor(r.cards.length / 2), mid = r.cards[m].offsetLeft, k = 1 - t;
+        r.cards.forEach(function (c, i) {
+          var d = i - m;
+          c.style.transform = 'translate(' + (mid - c.offsetLeft) * k + 'px,' + (40 + (d ? 18 : 0)) * k + 'px) rotate(' + d * 8 * k + 'deg)';
+          c.style.zIndex = d ? 2 : 3;
+          c.style.opacity = 0.35 + 0.65 * clamp(t * 1.6);
+        });
       });
     });
   }
@@ -106,11 +101,8 @@
   window.addEventListener('scroll', function () {
     if (!ticking) { ticking = true; requestAnimationFrame(frame); }
   }, { passive: true });
-  window.addEventListener('resize', layout);
-  if (window.ResizeObserver) {
-    var ro = new ResizeObserver(function () { layout(); });
-    blocks.forEach(function (el) { ro.observe(el); });
-  }
-  window.addEventListener('load', layout);
-  layout();
+  window.addEventListener('resize', function () { placeStacks(); frame(); });
+  window.addEventListener('load', function () { placeStacks(); frame(); });
+  placeStacks();
+  frame();
 })();

@@ -1,29 +1,32 @@
 /* Shared by the app pages (Breakthru, Catch Up, TallyUp, Spend, Fridge). */
 
-/* Phones: the app's icon and name sit in the middle of the header, and a
-   small bus with a back arrow on the left goes home to Panicbus Studios. */
-.nav-panicbus .nav-back { display: none; }
+/* Header: the app's icon and name sit big in the middle, and a small bus
+   with a back arrow on the left goes home to Panicbus Studios. */
+body nav .inner, body nav.app-nav {
+  display: grid; grid-template-columns: 1fr auto 1fr; justify-content: initial; align-items: center; gap: 8px;
+}
+body .nav-panicbus { justify-self: start; }
+body .nav-logo, body .nav-brand { justify-self: center; }
+body .nav-cta { display: none; }
+body .nav-panicbus > svg, body .nav-panicbus > img { display: none; }
+body .nav-panicbus .nav-back { display: inline-flex; align-items: center; gap: 6px; color: var(--text); }
+body .nav-panicbus .nav-back svg { display: block; width: 18px; height: 18px; }
+body .nav-panicbus .nav-back svg.nav-back-bus { width: 36px; height: 36px; }
+body .nav-panicbus:hover .nav-back svg:first-child { transform: translateX(-3px); }
+body .nav-panicbus .nav-back svg:first-child { transition: transform .2s ease; }
+/* Bigger app logo on wide screens. */
+@media (min-width: 681px) {
+  body .nav-logo img { width: 48px; height: 48px; }
+  body .nav-logo > svg { width: auto; height: 50px; }
+  body .nav-logo span { font-size: 34px; }
+  body .nav-brand img { width: 30px; height: 52px; }
+  body .nav-brand span { font-size: 40px; }
+}
 @media (max-width: 680px) {
-  body nav .inner, body nav.app-nav {
-    display: grid; grid-template-columns: 1fr auto 1fr; justify-content: initial; align-items: center; gap: 8px;
-  }
   body nav .inner { padding: 0 20px; }
-  body .nav-panicbus { justify-self: start; }
-  body .nav-logo, body .nav-brand { justify-self: center; }
-  body .nav-panicbus > svg, body .nav-panicbus > img { display: none; }
-  body .nav-panicbus .nav-back { display: inline-flex; align-items: center; gap: 4px; color: var(--text); }
-  body .nav-panicbus .nav-back svg { display: block; width: 16px; height: 16px; }
+  body .nav-panicbus .nav-back svg { width: 16px; height: 16px; }
   body .nav-panicbus .nav-back svg.nav-back-bus { width: 30px; height: 30px; }
 }
-
-/* Sections stack: each one sticks as the next slides up over it (set up in
-   app-pages.js). The covered one dims a little. */
-.stack-block { position: sticky; }
-.stack-block::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: #000; opacity: calc(var(--p, 0) * 0.2);
-}
-.stack-block + .stack-block { box-shadow: 0 -18px 40px rgba(0,0,0,0.12); }
 
 /* Phones: feature cards stack like How I build on the home page. */
 @media (max-width: 680px) {
@@ -38,11 +41,18 @@
   }
 }
 
-/* Cards that deal out from a stack (see app-pages.js). */
-.fan-row > * { will-change: transform, opacity; position: relative; }
-@media (max-width: 860px) { .fan-section { overflow-x: clip; } }
+/* Smaller cards move in as they scroll into view (see app-pages.js). The
+   hidden starting states apply only once the script has switched motion on. */
+.anim-fan > * { will-change: transform, opacity; position: relative; }
+.anim-clip { overflow-x: clip; }
+.card-motion .anim > * { transition: opacity .7s ease, transform .9s cubic-bezier(.2,.8,.2,1); }
+.card-motion .anim-rise > *:not(.in) { opacity: 0; transform: translateY(44px); }
+.card-motion .anim-pop > *:not(.in) { opacity: 0; transform: scale(.9); }
+.card-motion .anim-tilt > *:not(.in) { opacity: 0; transform: perspective(900px) rotateX(22deg) translateY(30px); transform-origin: 50% 100%; }
+.card-motion .anim-slide > *:nth-child(odd):not(.in) { opacity: 0; transform: translateX(-56px); }
+.card-motion .anim-slide > *:nth-child(even):not(.in) { opacity: 0; transform: translateX(56px); }
 
 @media (prefers-reduced-motion: reduce) {
-  .stack-block::after, .card-stack > *::after { display: none; }
-  .card-stack > *, .fan-row > * { transform: none !important; opacity: 1 !important; }
+  .card-stack > *::after { display: none; }
+  .card-stack > *, .anim-fan > * { transform: none !important; opacity: 1 !important; }
 }
