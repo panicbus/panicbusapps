@@ -919,6 +919,18 @@
     };
     glide = requestAnimationFrame(step);
   }
+  // Work with me links jump straight there, with no scrolling on the way.
+  var hireSec = document.getElementById('hire');
+  document.querySelectorAll('a[href="#hire"]').forEach(function (el) {
+    el.addEventListener('click', function (e) {
+      if (!hireSec) return;
+      e.preventDefault();
+      stopGlide();
+      var y = hireSec.getBoundingClientRect().top + window.scrollY - (head ? head.offsetHeight : 0);
+      window.scrollTo({ top: Math.round(y), behavior: 'instant' });
+    });
+  });
+
   // The down arrow and the hero's See the apps button share the same glide.
   var toApps = Array.prototype.slice.call(document.querySelectorAll('.hero a[href="#apps"]'));
   if (cue) toApps.push(cue);
