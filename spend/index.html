@@ -126,13 +126,15 @@ footer { padding: 40px 0; border-top: 1px solid var(--border); text-align: cente
   .nav-cta { display: none; }
 }
 </style>
+<link rel="stylesheet" href="../assets/app-pages.css">
 <script src="../assets/analytics.js" defer></script>
+<script src="../assets/app-pages.js" defer></script>
 </head>
 <body>
 
 <nav>
 <div class="inner">
-  <a href="../" class="nav-panicbus"><img src="../assets/studios/panicbus-logo.svg" alt="Panicbus Studios"></a>
+  <a href="../" class="nav-panicbus" aria-label="Panicbus Studios"><img src="../assets/studios/panicbus-logo.svg" alt="Panicbus Studios"><span class="nav-back" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none"><path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="nav-back-bus" viewBox="0 0 240 240"><rect width="240" height="240" rx="54" fill="#17141C"/><g transform="translate(36,71.2) scale(0.84)"><rect x="0" y="30" width="42" height="9" rx="4.5" fill="#FF5A47"/><rect x="10" y="51" width="44" height="11" rx="5.5" fill="#FF5A47"/><rect x="2" y="73" width="34" height="9" rx="4.5" fill="#FF5A47"/><rect x="56" y="16" width="140" height="80" rx="18" fill="#FFB12B"/><rect x="64" y="20" width="124" height="8" rx="4" fill="#FFC65C"/><rect x="68" y="34" width="26" height="24" rx="6" fill="#17141C"/><rect x="100" y="34" width="26" height="24" rx="6" fill="#17141C"/><path d="M132 34 h32 a8 8 0 0 1 8 8 v8 a8 8 0 0 1 -8 8 h-32 z" fill="#17141C"/><circle cx="188" cy="78" r="6" fill="#FFF3D6"/><circle cx="92" cy="96" r="16" fill="#17141C"/><circle cx="168" cy="96" r="16" fill="#17141C"/><circle cx="92" cy="96" r="6" fill="#FFB12B"/><circle cx="168" cy="96" r="6" fill="#FFB12B"/></g></svg></span></a>
   <a href="index.html" class="nav-logo">
     <img src="spend-icon-1024.png" alt="Spend. icon">
     <span>Spend<em>.</em></span>
@@ -174,7 +176,7 @@ footer { padding: 40px 0; border-top: 1px solid var(--border); text-align: cente
   <div class="section-eyebrow">Features</div>
   <h2 class="section-h">Everything you need, nothing you don't</h2>
   <p class="section-sub">Built for people who want to actually understand where their money goes.</p>
-  <div class="feat-grid">
+  <div class="feat-grid card-stack" data-anim="fan">
 
     <div class="feat-card">
       <div class="feat-icon">
@@ -274,7 +276,7 @@ footer { padding: 40px 0; border-top: 1px solid var(--border); text-align: cente
   <div class="section-eyebrow">Setup</div>
   <h2 class="section-h">Up and running in 5 minutes</h2>
   <p class="section-sub">A guided setup walks you through everything on first launch, no manual required.</p>
-  <div class="setup-grid">
+  <div class="setup-grid" data-anim="rise">
     <div class="setup-step">
       <img src="wizard-2.png" alt="Choose your budget categories" class="setup-img">
       <div class="setup-label"><span class="step-num">1</span> Choose your categories</div>
