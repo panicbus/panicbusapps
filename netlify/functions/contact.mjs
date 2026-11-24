@@ -42,7 +42,9 @@ export default async (req) => {
     }),
   });
   if (!res.ok) {
-    console.error('Resend error', res.status);
+    // Resend's own error (e.g. an unverified sender domain). Never the message.
+    const err = await res.json().catch(() => ({}));
+    console.error('Resend error', res.status, err.name, err.message);
     return new Response('Send failed', { status: 502 });
   }
   return new Response(null, { status: 204 });

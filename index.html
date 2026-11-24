@@ -688,11 +688,11 @@
             <path class="line fill f3" d="M21 28 H30"/>
             <g class="check"><circle class="line accent" cx="44" cy="40" r="7" fill="var(--bg-card)"/><path class="line accent" d="M40.5 40 l2.5 2.5 L47.5 37.5"/></g>
           </svg>
-          <h3>Your application, start to finish</h3>
+          <h3>Your application,<br>Start to finish.</h3>
           <p>Design, build, launch and support, on the web or on your Mac.</p>
         </div>
       </div>
-      <button type="button" class="hire-btn" data-contact>Tell me your idea</button>
+      <button type="button" class="hire-btn" data-contact>Let's chat.</button>
       </div>
     </section>
 
@@ -708,7 +708,7 @@
 
   <footer class="site-footer">
     <span>&copy; 2026 Panicbus Studios &middot; Built in Alameda, CA</span>
-    <span class="links"><a href="mailto:nicocrisafulli@gmail.com">Support</a><a href="https://www.linkedin.com/in/nicocrisafulli" target="_blank" rel="noopener">LinkedIn</a></span>
+    <span class="links"><a href="mailto:nicocrisafulli@gmail.com" data-contact>Support</a><a href="https://www.linkedin.com/in/nicocrisafulli" target="_blank" rel="noopener">LinkedIn</a></span>
   </footer>
   <div class="bus-lane" aria-hidden="true">
     <svg class="lane-bus" id="lane-bus" viewBox="0 0 200 116">
@@ -931,7 +931,7 @@
       e.preventDefault();
       stopGlide();
       var y = hireSec.getBoundingClientRect().top + window.scrollY - (head ? head.offsetHeight : 0);
-      window.scrollTo({ top: Math.round(y), behavior: 'instant' });
+      window.scrollTo({ top: Math.round(y) - 50, behavior: 'instant' });
     });
   });
 
@@ -1222,7 +1222,8 @@
   var fields = dlg.querySelector('.fields');
   var fallback = 'Something went wrong. You can email me at <a href="mailto:nicocrisafulli@gmail.com">nicocrisafulli@gmail.com</a>.';
   document.querySelectorAll('[data-contact]').forEach(function (b) {
-    b.addEventListener('click', function () {
+    b.addEventListener('click', function (e) {
+      e.preventDefault();
       fields.style.display = 'contents'; status.textContent = '';
       dlg.showModal();
     });
