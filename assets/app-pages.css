@@ -1,0 +1,48 @@
+/* Shared by the app pages (Breakthru, Catch Up, TallyUp, Spend, Fridge). */
+
+/* Phones: the app's icon and name sit in the middle of the header, and a
+   small bus with a back arrow on the left goes home to Panicbus Studios. */
+.nav-panicbus .nav-back { display: none; }
+@media (max-width: 680px) {
+  body nav .inner, body nav.app-nav {
+    display: grid; grid-template-columns: 1fr auto 1fr; justify-content: initial; align-items: center; gap: 8px;
+  }
+  body nav .inner { padding: 0 20px; }
+  body .nav-panicbus { justify-self: start; }
+  body .nav-logo, body .nav-brand { justify-self: center; }
+  body .nav-panicbus > svg, body .nav-panicbus > img { display: none; }
+  body .nav-panicbus .nav-back { display: inline-flex; align-items: center; gap: 4px; color: var(--text); }
+  body .nav-panicbus .nav-back svg { display: block; width: 16px; height: 16px; }
+  body .nav-panicbus .nav-back svg.nav-back-bus { width: 30px; height: 30px; }
+}
+
+/* Sections stack: each one sticks as the next slides up over it (set up in
+   app-pages.js). The covered one dims a little. */
+.stack-block { position: sticky; }
+.stack-block::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: #000; opacity: calc(var(--p, 0) * 0.2);
+}
+.stack-block + .stack-block { box-shadow: 0 -18px 40px rgba(0,0,0,0.12); }
+
+/* Phones: feature cards stack like How I build on the home page. */
+@media (max-width: 680px) {
+  .card-stack { display: flex !important; flex-direction: column; gap: 20px; }
+  .card-stack > * {
+    position: sticky; box-shadow: 0 -12px 30px rgba(0,0,0,0.18);
+    transform-origin: 50% 0; transform: scale(calc(1 - var(--p, 0) * 0.06));
+  }
+  .card-stack > *::after {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+    background: #000; opacity: calc(var(--p, 0) * 0.35);
+  }
+}
+
+/* Cards that deal out from a stack (see app-pages.js). */
+.fan-row > * { will-change: transform, opacity; position: relative; }
+@media (max-width: 860px) { .fan-section { overflow-x: clip; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .stack-block::after, .card-stack > *::after { display: none; }
+  .card-stack > *, .fan-row > * { transform: none !important; opacity: 1 !important; }
+}

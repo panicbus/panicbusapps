@@ -86,7 +86,7 @@
   .site-nav a:hover { color: var(--amber); }
   .site-nav .count { color: var(--text-muted); }
   .site-nav .pill {
-    color: var(--bg); background: var(--amber); padding: 12px 20px; border-radius: 999px;
+    color: var(--bg); background: var(--amber); padding: 12px 20px; border-radius: 10px;
   }
   .site-nav .pill:hover { color: var(--bg); background: #FFC65C; }
   .site-nav a[aria-current="page"] { color: var(--amber); }
@@ -234,6 +234,54 @@
   .principle h3 { margin: 0; font-size: 20px; font-weight: 700; }
   .principle p { margin: 0; font-size: 16px; line-height: 1.55; color: var(--text-muted); }
 
+  /* Work with me: one box per offer, each with a quiet line icon that moves a little. */
+  .hire { padding: 72px 0 0; }
+  .hire-stage { display: flex; flex-direction: column; gap: 16px; text-align: center; }
+  .hire h2 { margin: 0; font-family: 'Sora', sans-serif; font-size: 32px; font-weight: 700; letter-spacing: -0.02em; }
+  .hire .hire-lede { margin: 0 0 24px; font-size: 18px; line-height: 1.55; color: var(--text-muted); }
+  .offers { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 32px; }
+  .offer {
+    display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 28px;
+    border-radius: 16px; background: var(--bg-card); border: 1px solid rgba(255,255,255,0.08); text-align: center;
+  }
+  .offer h3 { margin: 0; font-size: 20px; font-weight: 700; }
+  .offer-art { width: 84px; height: 84px; overflow: visible; align-self: center; }
+  .offer-art .line { fill: none; stroke: var(--label); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .offer-art .accent { stroke: var(--amber); }
+  .hire .btn-amber { align-self: center; }
+
+  /* Frontend: the page's lines draw in, one after another. */
+  .art-ui .row { stroke-dasharray: 32; stroke-dashoffset: 32; animation: row-in 6s ease-in-out infinite; }
+  .art-ui .r2 { animation-delay: .3s; } .art-ui .r3 { animation-delay: .6s; }
+  @keyframes row-in { 0% { stroke-dashoffset: 32; } 20%, 85% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 32; } }
+  /* AI workflows: work passes from tool to tool. */
+  .art-flow .pulse { offset-path: path('M8 28 H48'); animation: flow 3.6s ease-in-out infinite; }
+  @keyframes flow { 0% { offset-distance: 0%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; } }
+  /* Your application: the phone draws itself, the screen fills in, then a check. */
+  .art-app .sketch { stroke-dasharray: 130; animation: sketch 6s ease-in-out infinite; }
+  @keyframes sketch { 0% { stroke-dashoffset: 130; } 25%, 88% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 130; } }
+  .art-app .fill { opacity: 0; animation: app-fill 6s infinite; }
+  .art-app .f2 { animation-delay: .2s; } .art-app .f3 { animation-delay: .4s; }
+  @keyframes app-fill { 0%, 28% { opacity: 0; } 36%, 88% { opacity: 1; } 100% { opacity: 0; } }
+  .art-app .check { opacity: 0; transform-origin: 44px 40px; transform-box: view-box; animation: app-check 6s infinite; }
+  @keyframes app-check { 0%, 45% { opacity: 0; transform: scale(.6); } 52%, 88% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .offer-art * { animation: none !important; }
+    .art-ui .row { stroke-dashoffset: 0; }
+    .art-flow .pulse { offset-distance: 50%; }
+    .art-app .sketch { stroke-dashoffset: 0; }
+    .art-app .fill, .art-app .check { opacity: 1; transform: none; }
+  }
+
+  /* Work with me, scroll motion: the boxes start stacked and tilted in the
+     middle and deal out to their places as the section scrolls in (script at
+     the bottom). Phones slide each box in from alternating sides. */
+  .hire .offer { will-change: transform, opacity; }
+  @media (max-width: 760px) { .hire { overflow-x: clip; } }
+  @media (prefers-reduced-motion: reduce) {
+    .hire .offer { opacity: 1 !important; transform: none !important; transition: none !important; }
+  }
+
   /* Hi, I'm Nico */
   .intro-card {
     display: flex; flex-wrap: wrap; align-items: center; gap: 28px; margin: 72px 0;
@@ -245,7 +293,7 @@
   .intro-card .copy p:last-child { margin: 0; font-size: 16px; line-height: 1.55; color: var(--text-muted); }
   .btn-amber {
     display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 22px;
-    border-radius: 999px; background: var(--amber); color: var(--bg); text-decoration: none;
+    border-radius: 10px; background: var(--amber); color: var(--bg); text-decoration: none;
     font-weight: 700; font-size: 15px;
   }
   .btn-amber:hover { background: #FFC65C; }
@@ -327,7 +375,7 @@
     .site-nav { gap: 0; }
     .site-nav .pill { display: none; }
     .site-nav a.about {
-      display: inline-flex; align-items: center; min-height: 40px; padding: 0 18px; border-radius: 999px;
+      display: inline-flex; align-items: center; min-height: 40px; padding: 0 18px; border-radius: 10px;
       border: 1px solid rgba(255,255,255,0.22); font-size: 15px;
     }
     .stack { --stack-top: 12px; --stack-step: 10px; gap: 24px; }
@@ -359,8 +407,8 @@
     .app.compact .app-desc { display: none; }
     .pills { font-size: 12px; }
     .cta { min-height: 40px; }
-    .app-shot { flex: 1 1 0; min-height: 0; }
-    .app-shot img { height: 100%; aspect-ratio: auto !important; object-fit: cover; object-position: top center; }
+    .app-shot { flex: 1 1 0; min-height: 0; display: flex; align-items: center; justify-content: center; }
+    .app-shot img { width: auto; height: auto; max-width: 100%; max-height: 100%; aspect-ratio: auto !important; object-fit: contain; }
     .app.no-shot .app-shot { display: none; }
     .approach { padding-top: 72px; }
     .bus-lane { height: 72px; }
@@ -536,6 +584,46 @@
         <div class="principle"><span class="num">01</span><h3>A strategy for every scenario</h3><p>Each project solves a problem that I personally encountered, engineered to perform.</p></div>
         <div class="principle"><span class="num">02</span><h3>Built-in privacy</h3><p>Systems rooted in data minimalism. Nothing is sold, everything yours stays yours.</p></div>
         <div class="principle"><span class="num">03</span><h3>Anti-subscription</h3><p>Free, or a fair one-off price. Updates always included.</p></div>
+      </div>
+    </section>
+
+    <section class="hire" id="hire">
+      <div class="hire-stage">
+      <h2>Work with me</h2>
+      <p class="hire-lede">I'm taking on remote contract and consulting work.</p>
+      <div class="offers">
+        <div class="offer">
+          <svg class="offer-art art-ui" viewBox="0 0 56 56" aria-hidden="true">
+            <rect class="line" x="4" y="8" width="48" height="40" rx="5"/>
+            <path class="line" d="M4 17 H52"/>
+            <path class="line row r1 accent" d="M12 26 H44"/>
+            <path class="line row r2" d="M12 33 H38"/>
+            <path class="line row r3" d="M12 40 H30"/>
+          </svg>
+          <h3>Frontend engineering</h3>
+        </div>
+        <div class="offer">
+          <svg class="offer-art art-flow" viewBox="0 0 56 56" aria-hidden="true">
+            <path class="line" d="M8 28 H48"/>
+            <rect class="line" x="2" y="22" width="12" height="12" rx="3" fill="var(--bg-card)"/>
+            <rect class="line" x="22" y="22" width="12" height="12" rx="3" fill="var(--bg-card)"/>
+            <rect class="line" x="42" y="22" width="12" height="12" rx="3" fill="var(--bg-card)"/>
+            <circle class="pulse" r="3" fill="var(--amber)"/>
+          </svg>
+          <h3>AI workflow automation</h3>
+        </div>
+        <div class="offer">
+          <svg class="offer-art art-app" viewBox="0 0 56 56" aria-hidden="true">
+            <rect class="line sketch" x="16" y="4" width="24" height="44" rx="5"/>
+            <path class="line fill accent" d="M21 14 H35"/>
+            <path class="line fill f2" d="M21 21 H35"/>
+            <path class="line fill f3" d="M21 28 H30"/>
+            <g class="check"><circle class="line accent" cx="44" cy="40" r="7" fill="var(--bg-card)"/><path class="line accent" d="M40.5 40 l2.5 2.5 L47.5 37.5"/></g>
+          </svg>
+          <h3>Your application, start to finish</h3>
+        </div>
+      </div>
+      <a class="btn-amber" href="mailto:nicocrisafulli@gmail.com?subject=A%20project%20for%20Panicbus%20Studios">Tell me about your project <span class="arrow" aria-hidden="true">&rarr;</span></a>
       </div>
     </section>
 
@@ -724,6 +812,10 @@
   if (approach) sections.push({ label: 'How I build', at: function () {
     return Math.round(approach.getBoundingClientRect().top + window.scrollY - (head ? head.offsetHeight : 0));
   } });
+  var hire = document.getElementById('hire');
+  if (hire) sections.push({ label: 'Work with me', at: function () {
+    return Math.round(hire.getBoundingClientRect().top + window.scrollY - (head ? head.offsetHeight : 0));
+  } });
 
   var nav = document.createElement('nav');
   nav.className = 'page-dots';
@@ -820,10 +912,16 @@
     ticking = false;
     if (reduce.matches) { render(1, 0); return; }  // finished drawing, held flat
     if (narrow.matches) {
-      // Phones have little scroll before the cards, so the sketch starts half
-      // drawn and finishes over the first part of a screen of scrolling.
-      var q = range(window.scrollY, 0, window.innerHeight * .45);
-      render(.5 + .5 * range(q, 0, .7), range(q, .72, 1));
+      // Phones: the sketch starts sparse and draws a little on its own after
+      // load, so a quick thumb still sees it move. Scrolling then finishes the
+      // drawing and turns the phone, spread over the scroll it takes the phone
+      // to rise up under the header, so the turn is never a blink.
+      var headH = phone.ownerDocument.querySelector('.site-head').offsetHeight;
+      if (phoneTop === null) phoneTop = phone.getBoundingClientRect().top + window.scrollY;
+      var top = phoneTop;
+      var q = range(window.scrollY, 0, Math.max(240, top + phone.offsetHeight * .4 - headH));
+      var d = Math.max(intro, .12 + .88 * range(q, 0, .55));
+      render(d, range(q, .5, 1));
       return;
     }
     // The stage sticks just under the header, so progress runs from the page
@@ -837,8 +935,23 @@
   window.addEventListener('scroll', function () {
     if (!ticking) { ticking = true; requestAnimationFrame(update); }
   }, { passive: true });
-  window.addEventListener('resize', update);
+  window.addEventListener('resize', function () { phoneTop = null; update(); });
   reduce.addEventListener('change', update);
+  var phoneTop = null;  // measured once, since the turn itself moves the box a little
+
+  // Phones: on load the sketch draws from sparse to about half done by itself.
+  var intro = 0;
+  if (narrow.matches && !reduce.matches) {
+    var t0 = null;
+    var step = function (now) {
+      if (t0 === null) t0 = now;
+      var t = clamp((now - t0 - 300) / 1800);
+      intro = .12 + .36 * ease(t);
+      update();
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
   update();
 })();
 </script>
@@ -904,5 +1017,54 @@
 })();
 </script>
 
+
+<script>
+(function () {
+  // Work with me: wide screens deal the boxes out from a stack as the section
+  // scrolls in (and gather them again on the way back up); phones slide each
+  // box in once from alternating sides.
+  var hire = document.getElementById('hire');
+  if (!hire || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var offers = Array.prototype.slice.call(hire.querySelectorAll('.offer'));
+  var row = hire.querySelector('.offers');
+  var narrow = window.matchMedia('(max-width: 760px)');
+  function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+  function ease(t) { return 1 - Math.pow(1 - t, 3); }
+
+  if (narrow.matches) {
+    offers.forEach(function (o, i) {
+      o.style.opacity = 0; o.style.transform = 'translateX(' + (i % 2 ? 60 : -60) + 'px)';
+      o.style.transition = 'opacity .7s ease, transform .9s cubic-bezier(.2,.8,.2,1)';
+    });
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.style.opacity = 1; e.target.style.transform = 'none';
+        io.unobserve(e.target);
+      });
+    }, { threshold: 0.25 });
+    offers.forEach(function (o) { io.observe(o); });
+    return;
+  }
+
+  var ticking = false;
+  function frame() {
+    ticking = false;
+    // 0 when the row of boxes enters the screen, 1 once it reaches the upper middle.
+    var t = ease(clamp((window.innerHeight - row.getBoundingClientRect().top) / (window.innerHeight * 0.6)));
+    var mid = offers[1].offsetLeft;
+    offers.forEach(function (o, i) {
+      var k = 1 - t;
+      o.style.transform = 'translate(' + (mid - o.offsetLeft) * k + 'px,' + (40 + (i === 1 ? 0 : 18)) * k + 'px) rotate(' + (i - 1) * 10 * k + 'deg)';
+      o.style.zIndex = i === 1 ? 3 : 2;
+      o.style.opacity = 0.35 + 0.65 * clamp(t * 1.6);
+    });
+  }
+  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  frame();
+})();
+</script>
 </body>
 </html>
