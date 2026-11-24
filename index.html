@@ -112,19 +112,8 @@
   }
   .phone-layer, .phone-face { position: absolute; inset: 0; border-radius: 34px; }
   .phone-layer { border: 1.5px solid var(--label); opacity: 0; }
-  /* The face carries the page's grid, lined up with it, so the grid still
-     reads through the glass once the phone turns in 3D (some browsers hide
-     the page behind a turned layer). The script keeps it lined up. */
-  .phone-face {
-    border: 2px solid var(--label);
-    background-image:
-      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px),
-      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
-    background-size: 200px 200px, 200px 200px, 40px 40px, 40px 40px;
-    background-position: var(--gx, 0) var(--gy, 0);
-  }
+  /* The face is solid, so the page grid does not show through the phone. */
+  .phone-face { border: 2px solid var(--label); background: var(--bg); }
   .phone-notch {
     position: absolute; top: 10px; left: 50%; width: 22%; height: 6px; border-radius: 3px;
     background: var(--label); transform: translateX(-50%);
@@ -930,10 +919,27 @@
     };
     glide = requestAnimationFrame(step);
   }
-  if (cue) cue.addEventListener('click', function (e) {
-    if (!cards.length) return;
-    e.preventDefault();
-    slowGo(+cards[0].dataset.at || 0);
+  // Work with me links jump straight there, with no scrolling on the way.
+  var hireSec = document.getElementById('hire');
+  document.querySelectorAll('a[href="#hire"]').forEach(function (el) {
+    el.addEventListener('click', function (e) {
+      if (!hireSec) return;
+      e.preventDefault();
+      stopGlide();
+      var y = hireSec.getBoundingClientRect().top + window.scrollY - (head ? head.offsetHeight : 0);
+      window.scrollTo({ top: Math.round(y), behavior: 'instant' });
+    });
+  });
+
+  // The down arrow and the hero's See the apps button share the same glide.
+  var toApps = Array.prototype.slice.call(document.querySelectorAll('.hero a[href="#apps"]'));
+  if (cue) toApps.push(cue);
+  toApps.forEach(function (el) {
+    el.addEventListener('click', function (e) {
+      if (!cards.length) return;
+      e.preventDefault();
+      slowGo(+cards[0].dataset.at || 0);
+    });
   });
 
   var ticking = false;
@@ -1005,20 +1011,8 @@
     });
   }
 
-  // Line the face's grid up with the page grid (centered, from the top of
-  // the screen), using the phone's untransformed place in the layout.
-  function alignGrid() {
-    var parent = phone.offsetParent;
-    if (!parent) return;
-    var pr = parent.getBoundingClientRect();
-    var left = pr.left + phone.offsetLeft + 2, top = pr.top + phone.offsetTop + 2;
-    face.style.setProperty('--gx', (document.documentElement.clientWidth / 2 - 100 - left) + 'px');
-    face.style.setProperty('--gy', (-top) + 'px');
-  }
-
   function update() {
     ticking = false;
-    alignGrid();
     if (reduce.matches) { render(1, 0); return; }  // finished drawing, held flat
     if (narrow.matches) {
       // Phones: the sketch starts sparse and draws a little on its own after
