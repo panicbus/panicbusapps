@@ -280,7 +280,8 @@
 
   /* Work with me, scroll motion: the boxes start stacked and tilted in the
      middle and deal out to their places as the section scrolls in (script at
-     the bottom). Phones slide each box in from alternating sides. */
+     the bottom). Narrow tablets slide each box in from alternating sides;
+     phones stack them like the How I build cards. */
   .hire .offer { will-change: transform, opacity; }
   @media (max-width: 760px) { .hire { overflow-x: clip; } }
   @media (prefers-reduced-motion: reduce) {
@@ -437,14 +438,14 @@
       border: 1px solid rgba(255,255,255,0.22); font-size: 15px;
     }
     .stack { --stack-top: 12px; --stack-step: 10px; gap: 24px; }
-    /* How I build cards stack the same way as the app cards. */
-    .principles { --stack-top: 12px; --stack-step: 10px; display: flex; flex-direction: column; gap: 24px; }
-    .principle {
+    /* How I build and Work with me cards stack the same way as the app cards. */
+    .principles, .offers { --stack-top: 12px; --stack-step: 10px; display: flex; flex-direction: column; gap: 24px; }
+    .principle, .hire .offer {
       --p: 0; position: sticky; top: calc(var(--head, 72px) + 12px);
       box-shadow: 0 -12px 30px rgba(0,0,0,0.45);
       transform-origin: 50% 0; transform: scale(calc(1 - max(var(--p), var(--s, 0)) * 0.06));
     }
-    .principle::after {
+    .principle::after, .hire .offer::after {
       content: ""; position: absolute; inset: 0; border-radius: inherit;
       background: #000; opacity: calc(var(--p) * 0.45); pointer-events: none;
     }
@@ -477,8 +478,8 @@
     html { scroll-behavior: auto; }
     .cta:hover .arrow, .app:hover .cta .arrow, .scroll-cue svg { animation: none; }
     .app-shot img { transition: none; }
-    .app, .principle { transform: none; }
-    .app::after, .principle::after { display: none; }
+    .app, .principle, .offer { transform: none; }
+    .app::after, .principle::after, .offer::after { display: none; }
     .hero-pin { height: auto; }
     .hero-stage { position: relative; top: auto; height: auto; }
   }
@@ -736,7 +737,7 @@
   // Stacking cards. CSS does the stacking with position: sticky; this keeps
   // tall cards readable, lines the finished stack up so it leaves as one
   // piece, and adds the shrink and dim as each card is covered. The app cards
-  // stack everywhere; the How I build cards stack only on phones.
+  // stack everywhere; the How I build and Work with me cards stack only on phones.
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   var head = document.querySelector('.site-head');
   var stacks = [];
@@ -834,6 +835,7 @@
   }
   add('.stack', '.app', function () { return true; }, function () { return window.matchMedia('(max-width: 680px)').matches; }, true);
   add('.principles', '.principle', function () { return window.matchMedia('(max-width: 680px)').matches; });
+  add('.offers', '.offer', function () { return window.matchMedia('(max-width: 680px)').matches; });
   if (!stacks.length) return;
 
   var ticking = false;
@@ -1137,13 +1139,14 @@
 <script>
 (function () {
   // Work with me: wide screens deal the boxes out from a stack as the section
-  // scrolls in (and gather them again on the way back up); phones slide each
-  // box in once from alternating sides.
+  // scrolls in (and gather them again on the way back up); narrow tablets slide
+  // each box in once from alternating sides; phones stack them (script above).
   var hire = document.getElementById('hire');
   if (!hire || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   var offers = Array.prototype.slice.call(hire.querySelectorAll('.offer'));
   var row = hire.querySelector('.offers');
   var narrow = window.matchMedia('(max-width: 760px)');
+  if (window.matchMedia('(max-width: 680px)').matches) return;
   function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
   function ease(t) { return 1 - Math.pow(1 - t, 3); }
 
