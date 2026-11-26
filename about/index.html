@@ -172,6 +172,22 @@
     .bus-lane { height: 72px; }
     .lane-bus { width: 80px; bottom: 16px; }
     .bus-lane::after { bottom: 14px; }
+    /* Project cards stack on scroll like the cards on the home page
+       (script: ../assets/stack-cards.js). */
+    .project-grid { --stack-top: 12px; --stack-step: 10px; display: flex; flex-direction: column; gap: 24px; }
+    .project {
+      --p: 0; position: sticky; top: calc(var(--head, 68px) + 12px);
+      box-shadow: 0 -12px 30px rgba(0,0,0,0.45);
+      transform-origin: 50% 0; transform: scale(calc(1 - max(var(--p), var(--s, 0)) * 0.06));
+    }
+    .project::after {
+      content: ""; position: absolute; inset: 0; border-radius: inherit;
+      background: #000; opacity: calc(var(--p) * 0.45); pointer-events: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .project { transform: none; }
+    .project::after { display: none; }
   }
   @media print {
     body { background: #fff; color: #111; padding-top: 0; }
@@ -334,6 +350,12 @@
     </svg>
   </div>
 </div>
+
+<script src="../assets/stack-cards.js"></script>
+<script>
+  // Project cards stack on phones, like the cards on the home page.
+  stackCards([['.project-grid', '.project', function () { return window.matchMedia('(max-width: 680px)').matches; }]]);
+</script>
 
 <script>
 (function () {
